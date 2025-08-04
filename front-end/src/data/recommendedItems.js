@@ -122,4 +122,3 @@ const recommendedItems = [
 ];
 
 export default recommendedItems;
- 
