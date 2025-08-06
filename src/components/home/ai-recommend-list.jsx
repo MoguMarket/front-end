@@ -18,7 +18,7 @@ export default function AiRecommendList() {
     };
 
     const handleMarketClick = () => {
-        console.log("시장 페이지로 이동!");
+        console.log("시장 페이지로 이동");
     };
 
     const settings = {
@@ -30,7 +30,7 @@ export default function AiRecommendList() {
     };
 
     return (
-        <div className="px-4 py-6 font-[Pretendard] tracking-[-0.025em]">
+        <div className="px-2 py-6 font-[Pretendard] tracking-[-0.025em]">
             <h3 className="text-lg font-semibold mb-4">
                 {name}님을 위한{" "}
                 <span className="text-green-600">AI 추천 상품</span>
