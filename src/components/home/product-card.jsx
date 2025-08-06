@@ -1,4 +1,5 @@
 import { FaHeart } from "react-icons/fa";
+import { Star } from "lucide-react";
 
 export default function ProductCard({
     name,
@@ -15,7 +16,7 @@ export default function ProductCard({
     onToggleLike,
 }) {
     return (
-        <div className="p-2 bg-white rounded-lg shadow-md relative mx-2">
+        <div className="p-2 bg-white rounded-lg shadow-md relative mx-2 pb-4">
             <img
                 src={imageUrl}
                 alt={name}
@@ -48,8 +49,9 @@ export default function ProductCard({
                     {price.toLocaleString()}원
                 </span>
             </div>
-            <div className="text-xs text-yellow-500 mt-1">
-                ⭐ {rating} ({reviews})
+            <div className="flex items-center text-xs text-yellow-500 mt-1">
+                <Star size={12} fill="currentColor" className="mr-1" />
+                {rating} ({reviews})
             </div>
         </div>
     );
