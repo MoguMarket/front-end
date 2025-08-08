@@ -1,5 +1,3 @@
-import { useMemo } from "react";
-import { useFilters } from "./filters-context";
 import { useState } from "react";
 import Slider from "react-slick";
 import recommendedItems from "../data/recommendedItems";
@@ -9,7 +7,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 export default function AiRecommendList() {
-    const { name } = useUserContext();
+    const user = useUserContext();
+    const userName = user?.name ?? "고객";
     const [items, setItems] = useState(recommendedItems);
 
     const toggleLike = (id) => {
@@ -32,13 +31,13 @@ export default function AiRecommendList() {
     };
 
     return (
-        <div className="px-2 py-6 font-[Pretendard] tracking-[-0.025em]">
-            <h3 className="text-lg font-semibold mb-4">
-                {name}님을 위한{" "}
-                <span className="text-green-600">AI 추천 상품</span>
-            </h3>
+        <div className="px-2 pt-3 pb-0 font-[Pretendard] tracking-[-0.025em]">
+            <h2 className="mt-0 mb-2 text-base md:text-lg font-semibold leading-snug tracking-[-0.025em]">
+                {userName}님을 위한{" "}
+                <span className="text-[#4CC554]">AI 추천 상품</span>
+            </h2>
 
-            <Slider {...settings}>
+            <Slider {...settings} className="mb-2">
                 {items.map((item) => (
                     <ProductCard
                         key={item.id}

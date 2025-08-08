@@ -22,7 +22,6 @@ export default function CategoryFilter({ title = "카테고리" }) {
                 </button>
             </div>
 
-            {/* 즐겨찾기만 노출되는 축약바 */}
             <div className="flex gap-2 overflow-x-auto">
                 {favorites.map((c) => (
                     <button
@@ -34,9 +33,7 @@ export default function CategoryFilter({ title = "카테고리" }) {
                     </button>
                 ))}
             </div>
-
-            {/* 펼침 패널 */}
-            {isCatPanelOpen && <CategoryPanel />}
+            {isCatPanelOpen && <CategorySheet />}
         </div>
     );
 }

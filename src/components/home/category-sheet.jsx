@@ -2,7 +2,7 @@
 import { createPortal } from "react-dom";
 import { Minus } from "lucide-react";
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion"; // ← 이 한 줄만
+import { AnimatePresence, motion } from "framer-motion";
 import { MAX_FAV, useFilters } from "./filters-context";
 import SearchBar from "./search-bar";
 
@@ -31,20 +31,22 @@ export default function CategorySheet() {
         else if (canAdd) setDraft([...draft, c]);
     };
 
-    const onSave = async () => {
+    const closeWithSave = async () => {
         await commitFavorites(draft);
         setCatPanelOpen(false);
     };
 
     useEffect(() => {
+        if (!isCatPanelOpen) return;
         const onKey = (e) => e.key === "Escape" && setCatPanelOpen(false);
         window.addEventListener("keydown", onKey);
+        const prev = document.body.style.overflow;
         document.body.style.overflow = "hidden";
         return () => {
             window.removeEventListener("keydown", onKey);
-            document.body.style.overflow = "";
+            document.body.style.overflow = prev;
         };
-    }, [setCatPanelOpen]);
+    }, [isCatPanelOpen, setCatPanelOpen]);
 
     const sheet = (
         <AnimatePresence>
@@ -53,7 +55,7 @@ export default function CategorySheet() {
                     <motion.div
                         key="overlay"
                         className="fixed inset-0 bg-black/30 z-40"
-                        onClick={() => setCatPanelOpen(false)}
+                        onClick={closeWithSave}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -75,29 +77,30 @@ export default function CategorySheet() {
                         aria-modal="true"
                         aria-label="카테고리 선택"
                     >
-                        <div className="p-3 bg-[#62c05a]">
+                        <div className="p-3 relative bg-white">
                             <SearchBar placeholder="상품을 검색하세요" />
+                            <button
+                                type="button"
+                                onClick={closeWithSave}
+                                aria-label="카테고리 패널 닫기"
+                                className="absolute right-3 top-3 p-1 text-gray-600 hover:opacity-70"
+                            >
+                                <Minus size={16} />
+                            </button>
                         </div>
 
-                        <div className="p-3">
-                            <div className="mb-2 flex items-center justify-between">
+                        <div className="p-3 pt-2">
+                            <div className="mb-2">
                                 <h3 className="text-base font-semibold">
                                     카테고리
                                 </h3>
-                                <button
-                                    className="p-1 rounded-md hover:bg-gray-100"
-                                    onClick={() => setCatPanelOpen(false)}
-                                    aria-label="카테고리 패널 닫기"
-                                >
-                                    <Minus size={16} />
-                                </button>
                             </div>
 
-                            <div className="grid grid-cols-3 gap-2 py-2">
+                            <div className="flex flex-wrap items-center gap-2 py-1">
                                 {allCategories.map((c) => {
                                     const active = draft.includes(c);
                                     const base =
-                                        "px-4 py-2 rounded-full border text-sm text-center transition";
+                                        "px-3 py-1.5 rounded-full border text-[13px] leading-none text-center transition whitespace-nowrap";
                                     const cls = editMode
                                         ? active
                                             ? "bg-green-50 text-green-700 border-green-500"
@@ -113,7 +116,8 @@ export default function CategorySheet() {
                                     return (
                                         <button
                                             key={c}
-                                            className={`${base} ${cls}`}
+                                            type="button"
+                                            className={`${base} ${cls} shrink-0`}
                                             onClick={() => toggle(c)}
                                             disabled={disabled}
                                         >
@@ -123,8 +127,8 @@ export default function CategorySheet() {
                                 })}
                             </div>
 
-                            <div className="mt-3 mb-1 flex items-center justify-between">
-                                <label className="flex items-center gap-2 text-sm select-none">
+                            <div className="mt-3 mb-1">
+                                <label className="inline-flex items-center gap-2 text-sm select-none">
                                     <span>즐겨찾기 편집</span>
                                     <span
                                         onClick={() => setEditMode(!editMode)}
@@ -143,13 +147,6 @@ export default function CategorySheet() {
                                         />
                                     </span>
                                 </label>
-
-                                <button
-                                    onClick={onSave}
-                                    className="px-5 py-2 rounded-full bg-green-500 text-white font-medium"
-                                >
-                                    저장
-                                </button>
                             </div>
                         </div>
                     </motion.div>

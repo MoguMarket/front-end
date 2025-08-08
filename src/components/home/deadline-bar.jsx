@@ -29,10 +29,10 @@ export default function AiRecommendList() {
     };
 
     return (
-        <div className="px-2 py-6 font-[Pretendard] tracking-[-0.025em]">
-            <h3 className="text-lg font-semibold mb-4">
+        <div className="px-2 pt-2 pb-0">
+            <h2 className="mt-0 mb-2 text-base md:text-lg font-semibold leading-snug tracking-[-0.025em]">
                 마감이 임박한 상품이에요!
-            </h3>
+            </h2>
 
             <Slider {...settings}>
                 {items.map((item) => (
