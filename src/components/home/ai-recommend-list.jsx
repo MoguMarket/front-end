@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+import { useFilters } from "./filters-context";
 import { useState } from "react";
 import Slider from "react-slick";
 import recommendedItems from "../data/recommendedItems";
@@ -54,6 +56,7 @@ export default function AiRecommendList() {
                         market="구미새마을중앙시장"
                         onClickMarket={handleMarketClick}
                         onToggleLike={() => toggleLike(item.id)}
+                        daysLeft={item.daysLeft}
                     />
                 ))}
             </Slider>

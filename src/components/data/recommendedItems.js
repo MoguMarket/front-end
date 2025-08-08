@@ -10,6 +10,7 @@ const recommendedItems = [
         reviews: 17,
         liked: false,
         imageUrl: "/images/carrot.png",
+        daysLeft: 3,
     },
     {
         id: 2,
@@ -22,6 +23,7 @@ const recommendedItems = [
         reviews: 25,
         liked: true,
         imageUrl: "/images/potato.png",
+        daysLeft: 1,
     },
     {
         id: 3,
@@ -34,6 +36,7 @@ const recommendedItems = [
         reviews: 19,
         liked: false,
         imageUrl: "/images/onion.png",
+        daysLeft: 4,
     },
     {
         id: 4,
@@ -46,6 +49,7 @@ const recommendedItems = [
         reviews: 11,
         liked: false,
         imageUrl: "/images/garlic.png",
+        daysLeft: 2,
     },
     {
         id: 5,
@@ -58,6 +62,7 @@ const recommendedItems = [
         reviews: 20,
         liked: true,
         imageUrl: "/images/greenonion.png",
+        daysLeft: 1,
     },
     {
         id: 6,
@@ -70,6 +75,7 @@ const recommendedItems = [
         reviews: 8,
         liked: false,
         imageUrl: "/images/lettuce.png",
+        daysLeft: 4,
     },
     {
         id: 7,
@@ -82,6 +88,7 @@ const recommendedItems = [
         reviews: 13,
         liked: false,
         imageUrl: "/images/perilla.png",
+        daysLeft: 2,
     },
     {
         id: 8,
@@ -94,6 +101,7 @@ const recommendedItems = [
         reviews: 9,
         liked: false,
         imageUrl: "/images/radish.png",
+        daysLeft: 3,
     },
     {
         id: 9,
@@ -106,6 +114,7 @@ const recommendedItems = [
         reviews: 10,
         liked: false,
         imageUrl: "/images/zucchini.png",
+        daysLeft: 1,
     },
     {
         id: 10,
@@ -118,6 +127,7 @@ const recommendedItems = [
         reviews: 12,
         liked: true,
         imageUrl: "/images/chili.png",
+        daysLeft: 2,
     },
 ];
 

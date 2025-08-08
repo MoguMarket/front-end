@@ -12,6 +12,7 @@ const deadlineItems = [
         liked: false,
         imageUrl:
             "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        daysLeft: 1,
     },
     {
         id: 2,
@@ -26,6 +27,7 @@ const deadlineItems = [
         liked: true,
         imageUrl:
             "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        daysLeft: 0,
     },
     {
         id: 3,
@@ -40,6 +42,7 @@ const deadlineItems = [
         liked: false,
         imageUrl:
             "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        daysLeft: 1,
     },
     {
         id: 4,
@@ -54,6 +57,7 @@ const deadlineItems = [
         liked: true,
         imageUrl:
             "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        daysLeft: 0,
     },
     {
         id: 5,
@@ -68,6 +72,7 @@ const deadlineItems = [
         liked: false,
         imageUrl:
             "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        daysLeft: 1,
     },
     {
         id: 6,
@@ -82,6 +87,7 @@ const deadlineItems = [
         liked: false,
         imageUrl:
             "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        daysLeft: 0,
     },
     {
         id: 7,
@@ -96,6 +102,7 @@ const deadlineItems = [
         liked: true,
         imageUrl:
             "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        daysLeft: 1,
     },
     {
         id: 8,
@@ -110,6 +117,7 @@ const deadlineItems = [
         liked: false,
         imageUrl:
             "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        daysLeft: 0,
     },
     {
         id: 9,
@@ -124,6 +132,7 @@ const deadlineItems = [
         liked: false,
         imageUrl:
             "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        daysLeft: 1,
     },
     {
         id: 10,
@@ -138,6 +147,7 @@ const deadlineItems = [
         liked: true,
         imageUrl:
             "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        daysLeft: 0,
     },
 ];
 

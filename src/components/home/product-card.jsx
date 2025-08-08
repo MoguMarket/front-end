@@ -14,16 +14,31 @@ export default function ProductCard({
     market,
     onClickMarket,
     onToggleLike,
+    daysLeft,
 }) {
     // 할인율 계산
     const discountRate = Math.round(
         ((originalPrice - price) / originalPrice) * 100
     );
 
+    const showBadge = typeof daysLeft === "number";
+    const badgeText = daysLeft === 0 ? "D-DAY" : `D-${daysLeft}`;
+    const badgeBg = daysLeft === 0 ? "#F5292DB2" : "#4CC554B2";
+
     return (
         <div className="p-2 bg-white rounded-lg shadow-md relative mx-2 pb-4 border border-gray-200">
             {/* 상품 이미지 */}
             <div className="relative">
+                {/* 마감 D-Day 뱃지 */}
+                {showBadge && (
+                    <span
+                        className="absolute top-2 left-2 text-white text-xs font-normal px-2 py-[2px] rounded-full z-10"
+                        style={{ backgroundColor: badgeBg }}
+                    >
+                        {badgeText}
+                    </span>
+                )}
+
                 <img
                     src={imageUrl}
                     alt={name}
@@ -32,7 +47,7 @@ export default function ProductCard({
 
                 {/* 좋아요 버튼 */}
                 <div
-                    className="absolute bottom-2 right-2 bg-white rounded-full p-1 shadow cursor-pointer"
+                    className="absolute bottom-2 right-2 bg-gray-200 rounded-full p-1 shadow cursor-pointer"
                     onClick={onToggleLike}
                 >
                     <FaHeart
