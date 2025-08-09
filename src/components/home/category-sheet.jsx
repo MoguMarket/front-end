@@ -1,10 +1,8 @@
-// src/components/home/category-sheet.jsx
 import { createPortal } from "react-dom";
 import { Minus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useLayoutEffect, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { MAX_FAV, useFilters } from "./filters-context";
-import SearchBar from "./search-bar";
 
 export default function CategorySheet() {
     const {
@@ -36,6 +34,39 @@ export default function CategorySheet() {
         setCatPanelOpen(false);
     };
 
+    const [geom, setGeom] = useState({ left: 8, width: 360, top: 64 });
+
+    const recompute = useCallback(() => {
+        const container =
+            document.querySelector("[data-home-container]") ||
+            document.querySelector("main");
+        const topbar =
+            document.querySelector("[data-topbar]") ||
+            document.querySelector("header");
+
+        const cr = container?.getBoundingClientRect();
+        const tr = topbar?.getBoundingClientRect();
+
+        const top = (tr?.bottom ?? 0) + 8;
+        const left = cr ? cr.left : 8;
+        const width = cr
+            ? cr.width
+            : Math.max(320, window.innerWidth - left * 2);
+
+        setGeom({ left, width, top });
+    }, []);
+
+    useLayoutEffect(() => {
+        if (!isCatPanelOpen) return;
+        recompute();
+        window.addEventListener("resize", recompute);
+        window.addEventListener("scroll", recompute, true);
+        return () => {
+            window.removeEventListener("resize", recompute);
+            window.removeEventListener("scroll", recompute, true);
+        };
+    }, [isCatPanelOpen, recompute]);
+
     useEffect(() => {
         if (!isCatPanelOpen) return;
         const onKey = (e) => e.key === "Escape" && setCatPanelOpen(false);
@@ -54,7 +85,8 @@ export default function CategorySheet() {
                 <>
                     <motion.div
                         key="overlay"
-                        className="fixed inset-0 bg-black/30 z-40"
+                        className="fixed inset-x-0 bottom-0 bg-transparent z-40"
+                        style={{ top: geom.top }}
                         onClick={closeWithSave}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -63,7 +95,12 @@ export default function CategorySheet() {
 
                     <motion.div
                         key="panel"
-                        className="fixed left-1/2 -translate-x-1/2 top-3 z-50 w-[calc(100%-20px)] max-w-md rounded-2xl bg-white shadow-2xl border border-gray-200 overflow-hidden"
+                        className="fixed z-50 rounded-2xl bg-white shadow-2xl border border-gray-200 overflow-hidden"
+                        style={{
+                            left: geom.left,
+                            width: geom.width,
+                            top: geom.top,
+                        }}
                         initial={{ y: -12, opacity: 0, scale: 0.98 }}
                         animate={{ y: 0, opacity: 1, scale: 1 }}
                         exit={{ y: -12, opacity: 0, scale: 0.98 }}
@@ -77,23 +114,19 @@ export default function CategorySheet() {
                         aria-modal="true"
                         aria-label="카테고리 선택"
                     >
-                        <div className="p-3 relative bg-white">
-                            <SearchBar placeholder="상품을 검색하세요" />
-                            <button
-                                type="button"
-                                onClick={closeWithSave}
-                                aria-label="카테고리 패널 닫기"
-                                className="absolute right-3 top-3 p-1 text-gray-600 hover:opacity-70"
-                            >
-                                <Minus size={16} />
-                            </button>
-                        </div>
-
-                        <div className="p-3 pt-2">
-                            <div className="mb-2">
-                                <h3 className="text-base font-semibold">
+                        <div className="px-3 pt-3 pb-3">
+                            <div className="mb-2 flex items-center justify-between flex-nowrap">
+                                <h3 className="text-base font-semibold m-0">
                                     카테고리
                                 </h3>
+                                <button
+                                    type="button"
+                                    onClick={() => setCatPanelOpen(false)}
+                                    aria-label="카테고리 패널 최소화"
+                                    className="p-1 text-gray-600 hover:opacity-70 shrink-0"
+                                >
+                                    <Minus size={16} />
+                                </button>
                             </div>
 
                             <div className="flex flex-wrap items-center gap-2 py-1">

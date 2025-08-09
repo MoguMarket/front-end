@@ -1,4 +1,3 @@
-// src/pages/homePage.jsx
 import { FilterProvider } from "../components/home/filters-context";
 import SearchBar from "../components/home/search-bar";
 import CategoryFilter from "../components/home/category-filter";
@@ -36,8 +35,11 @@ export default function HomePage() {
             onSaveFavorites={saveFavorites}
             userKey="guest"
         >
-            <div className="px-4">
-                <SearchBar />
+            <div data-home-container className="mx-auto max-w-[720px] px-4">
+                <div data-page-searchbar>
+                    <SearchBar />
+                </div>
+
                 <CategoryFilter />
                 <AiRecommendList />
                 <DeadlineProductsList />
