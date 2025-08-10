@@ -11,10 +11,11 @@ export default function AiRecommendList() {
   const [items, setItems] = useState(recommendedItems);
 
   const toggleLike = (id) => {
-    const updated = items.map((item) =>
-      item.id === id ? { ...item, liked: !item.liked } : item
+    setItems((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, liked: !item.liked } : item
+      )
     );
-    setItems(updated);
   };
 
   const handleMarketClick = () => {
@@ -23,34 +24,36 @@ export default function AiRecommendList() {
 
   const settings = {
     dots: false,
+    arrows: false,
     infinite: false,
     speed: 500,
-    slidesToShow: 2,
+    slidesToShow: 2.2,
     slidesToScroll: 2,
   };
 
   return (
-    <div className="px-2 py-6 font-[Pretendard] tracking-[-0.025em]">
-      <h3 className="text-lg font-semibold mb-4">
+    <div className="py-3 font-[Pretendard] tracking-[-0.025em]">
+      <h3 className=" text-md font-semibold mb-2">
         {name}님을 위한 <span className="text-green-600">AI 추천 상품</span>
       </h3>
 
-      <Slider {...settings}>
+      {/* 여백 제거용 커스텀 클래스 */}
+      <Slider {...settings} className="ai-slider">
         {items.map((item) => (
           <ProductCard
             key={item.id}
             name={item.name}
             weight={item.weight}
-            price={item.price}
             originalPrice={item.originalPrice}
-            discount={item.discount}
+            discountedPrice={item.price}
             rating={item.rating}
-            reviews={item.reviews}
+            reviewCount={item.reviews}
             liked={item.liked}
             imageUrl={
+              item.imageUrl ??
               "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg"
             }
-            market="구미새마을중앙시장"
+            marketName="구미새마을중앙시장"
             onClickMarket={handleMarketClick}
             onToggleLike={() => toggleLike(item.id)}
           />
