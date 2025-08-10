@@ -3,8 +3,11 @@ import axios from "axios";
 import Slider from "react-slick";
 import { Star, Heart } from "lucide-react";
 import deadlineItems from "../db/deadlineItems";
+import { useNavigate } from "react-router-dom";
 
 const DeadlineProductsList = () => {
+  const navigate = useNavigate();
+
   const [products, setProducts] = useState(deadlineItems);
   const [likedItems, setLikedItems] = useState(
     deadlineItems.map((item) => ({ id: item.id, liked: item.liked }))
@@ -86,7 +89,10 @@ const DeadlineProductsList = () => {
 
               {/* 상품 정보 */}
               <div className="mt-2">
-                <p className="text-xs text-green-600 font-semibold">
+                <p
+                  className="text-xs text-green-600 font-semibold cursor-pointer"
+                  onClick={() => navigate(`/marketDetailPage/${item.id}`)}
+                >
                   {item.marketName}
                 </p>
                 <p className="text-sm font-medium line-clamp-2">

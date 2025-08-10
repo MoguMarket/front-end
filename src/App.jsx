@@ -13,6 +13,7 @@ import ShoppingPage from "./pages/shoppingCartPage";
 import OrderPage from "./pages/orderPage";
 import MyInfoPage from "./pages/myInfoPage";
 import MarketMapList from "./pages/marketMapList";
+import MarketDetailPage from "./pages/marketDetailPage/[id]";
 
 function AppContent() {
   const { pathname } = useLocation();
@@ -29,6 +30,7 @@ function AppContent() {
           <Route path="/order" element={<OrderPage />} />
           <Route path="/myinfo" element={<MyInfoPage />} />
           <Route path="/marketMapList" element={<MarketMapList />} />
+          <Route path="/marketDetailPage/:id" element={<MarketDetailPage />} />
         </Routes>
       </div>
       {!isMapPage && <BottomNavBar />}
