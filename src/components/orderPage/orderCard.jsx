@@ -1,6 +1,7 @@
 // src/components/orderPage/orderCard.jsx
 
 import React from "react";
+import { CheckIcon } from "@heroicons/react/20/solid";
 
 export default function OrderCard({ item, onClick, onCancel }) {
     const {
@@ -39,7 +40,7 @@ export default function OrderCard({ item, onClick, onCancel }) {
         onCancel && onCancel(id);
     };
 
-    // 원형 진행 링 계산
+    // 원형 진행 링
     const r = 46;
     const C = 2 * Math.PI * r;
     const dashOffset = C * (1 - percent / 100);
@@ -48,9 +49,13 @@ export default function OrderCard({ item, onClick, onCancel }) {
         <div
             role="button"
             onClick={handleClick}
-            className="grid grid-cols-[7rem_1fr] items-center gap-3 rounded-sm border border-gray-200 bg-white py-0 pr-3 pl-0 shadow-sm transition active:scale-[0.99]"
+            className="-mx-[12px] w-[calc(100%+24px)] max-w-[calc(100vw-24px)]
+                 grid grid-cols-[11rem_minmax(0,1fr)] items-center gap-3
+                 rounded-sm border border-gray-200 bg-white py-0 pr-4 pl-0
+                 shadow-sm transition active:scale-[0.99] overflow-hidden"
         >
-            <div className="relative w-28 aspect-square">
+            {/* 왼쪽 이미지 (링은 그대로) */}
+            <div className="relative w-40 h-[9.5rem]">
                 <div className="absolute inset-0 overflow-hidden rounded-l-sm">
                     <img
                         src={imageUrl}
@@ -61,7 +66,7 @@ export default function OrderCard({ item, onClick, onCancel }) {
                     <div className="pointer-events-none absolute inset-0 bg-gray-900/30" />
                 </div>
 
-                {/* 원형 진행 아이콘 */}
+                {/* 원형 진행 링 */}
                 <div className="pointer-events-none absolute left-1/2 top-1/2 z-20 h-28 w-28 -translate-x-1/2 -translate-y-1/2">
                     <svg
                         viewBox="0 0 100 100"
@@ -89,8 +94,6 @@ export default function OrderCard({ item, onClick, onCancel }) {
                             transform="rotate(-90 50 50)"
                         />
                     </svg>
-
-                    {/* 링 내부 텍스트 */}
                     <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-center">
                         <div className="leading-tight text-white drop-shadow">
                             {dDayLabel && (
@@ -110,8 +113,9 @@ export default function OrderCard({ item, onClick, onCancel }) {
 
             {/* 오른쪽 본문 */}
             <div className="min-w-0">
+                {/* 상단 라벨/취소 */}
                 <div className="flex items-start justify-between">
-                    <span className="text-[11px] font-medium text-emerald-600">
+                    <span className="text-xs font-medium text-emerald-600">
                         {marketName}
                     </span>
                     {cancellable && !isReady && (
@@ -126,52 +130,52 @@ export default function OrderCard({ item, onClick, onCancel }) {
                     )}
                 </div>
 
-                <div className="mt-0.5 line-clamp-1 text-sm font-medium text-gray-900">
+                {/* 상품명 */}
+                <div className="mt-0.5 truncate text-[14px] leading-snug font-semibold text-gray-900">
                     {productName}{" "}
-                    <span className="text-gray-500">/ {weightLabel}</span>
-                </div>
-
-                <div className="mt-1 flex items-baseline gap-2">
-                    {originalPrice != null && (
-                        <span className="text-xs text-gray-400 line-through">
-                            {number(originalPrice)}원
-                        </span>
-                    )}
-                    {discountRate > 0 && (
-                        <span className="text-xs text-[#FF5555]">
-                            {Math.round(discountRate * 100)}%
-                        </span>
-                    )}
-                    <span className="text-sm font-semibold">
-                        {number(price)}원
+                    <span className="font-normal text-gray-500">
+                        / {weightLabel}
                     </span>
                 </div>
 
-                <div className="mt-1 flex items-center gap-1 text-[11px]">
-                    {isReady ? (
-                        <span className="text-emerald-600">결제 완료</span>
-                    ) : (
-                        <>
-                            <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
-                                <svg
-                                    viewBox="0 0 20 20"
-                                    fill="currentColor"
-                                    className="h-3 w-3"
-                                    aria-hidden
-                                >
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M16.707 5.293a1 1 0 010 1.414l-7.071 7.071a1 1 0 01-1.414 0L3.293 9.95a1 1 0 011.414-1.414l3.09 3.09 6.364-6.364a1 1 0 011.414 0z"
-                                        clipRule="evenodd"
-                                    />
-                                </svg>
+                {/* 보조 라벨 */}
+                <div className="mt-0.5 text-[11px] text-gray-400">
+                    결제 예정금액
+                </div>
+
+                {/* 가격 라인: 왼쪽(원가/할인) + 오른쪽(현재가) */}
+                <div className="mt-0.5 grid grid-cols-[1fr_auto] items-baseline gap-2">
+                    {/* 왼쪽: 공간이 모자라면 '원가'만 먼저 잘림, 할인율은 항상 노출 */}
+                    <div className="min-w-0 flex items-baseline gap-2">
+                        {originalPrice != null && (
+                            <span className="max-w-[8rem] truncate text-[12px] text-gray-400 line-through">
+                                {number(originalPrice)}원
                             </span>
-                            <span className="text-gray-700">다음 단계까지</span>
-                            <span className="font-medium text-gray-900">
-                                {stepLabel}
+                        )}
+                        {discountRate > 0 && (
+                            <span className="flex-shrink-0 text-[12px] font-semibold text-[#FF5555] whitespace-nowrap">
+                                {Math.round(discountRate * 100)}%
                             </span>
-                        </>
-                    )}
+                        )}
+                    </div>
+
+                    {/* 오른쪽: 현재가는 항상 한 줄 유지 */}
+                    <span className="shrink-0 text-[16px] font-extrabold whitespace-nowrap">
+                        {number(price)}
+                        <span className="ml-0.5 font-bold">원</span>
+                    </span>
+                </div>
+
+                {/* 진행 상태 */}
+                <div className="mt-1 flex items-center gap-1.5 text-[12px]">
+                    <CheckIcon
+                        className="h-4 w-4 text-emerald-600 shrink-0"
+                        aria-hidden="true"
+                    />
+                    <span className="text-gray-600">다음 단계까지</span>
+                    <span className="font-semibold text-gray-900">
+                        {stepLabel}
+                    </span>
                 </div>
             </div>
         </div>
