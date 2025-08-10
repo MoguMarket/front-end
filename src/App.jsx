@@ -3,6 +3,7 @@ import {
   Routes,
   Route,
   useLocation,
+  useMatch,
 } from "react-router-dom";
 import BottomNavBar from "./components/bottomnavbar";
 import Header from "./components/header";
@@ -19,10 +20,17 @@ function AppContent() {
   const { pathname } = useLocation();
   const isMapPage = pathname === "/marketMapList";
 
+  const matchDetail = useMatch("/marketDetailPage/:id");
+  const isDetailPage = Boolean(matchDetail);
+
   return (
     <div className="relative w-full max-w-[390px] mx-auto bg-white">
-      {!isMapPage && <Header />}
-      <div className={`min-h-screen ${isMapPage ? "" : "pt-16 pb-16 px-4"}`}>
+      {!isMapPage && !isDetailPage && <Header />}
+      <div
+        className={`min-h-screen ${
+          isMapPage || isDetailPage ? "" : "pt-16 pb-16 px-4"
+        }`}
+      >
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/gift" element={<GiftPage />} />

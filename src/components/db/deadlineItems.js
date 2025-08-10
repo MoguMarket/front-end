@@ -1,8 +1,7 @@
 const deadlineItems = [
   {
     id: 1,
-    marketId: 2, // 구미새마을중앙시장
-    marketName: "구미새마을중앙시장",
+    marketName: "신평시장",
     name: "국내산 대파",
     weight: "1kg~",
     originalPrice: 3500,
@@ -16,8 +15,7 @@ const deadlineItems = [
   },
   {
     id: 2,
-    marketId: 8, // 금오시장
-    marketName: "금오시장",
+    marketName: "구미새마을중앙시장",
     name: "국내산 방울토마토",
     weight: "500g~",
     originalPrice: 4800,
@@ -31,8 +29,7 @@ const deadlineItems = [
   },
   {
     id: 3,
-    marketId: 9, // 원평시장
-    marketName: "원평시장",
+    marketName: "구미공단종합시장",
     name: "친환경 오이",
     weight: "3개입",
     originalPrice: 4000,
@@ -46,7 +43,6 @@ const deadlineItems = [
   },
   {
     id: 4,
-    marketId: 10, // 형곡시장
     marketName: "형곡시장",
     name: "국내산 감자",
     weight: "3kg~",
@@ -61,7 +57,6 @@ const deadlineItems = [
   },
   {
     id: 5,
-    marketId: 11, // 옥계시장
     marketName: "옥계시장",
     name: "국내산 양파",
     weight: "1.5kg~",
@@ -76,7 +71,6 @@ const deadlineItems = [
   },
   {
     id: 6,
-    marketId: 12, // 진평시장
     marketName: "진평시장",
     name: "친환경 시금치",
     weight: "300g~",
@@ -91,7 +85,6 @@ const deadlineItems = [
   },
   {
     id: 7,
-    marketId: 13, // 봉곡시장
     marketName: "봉곡시장",
     name: "국내산 깻잎",
     weight: "200g~",
@@ -106,7 +99,6 @@ const deadlineItems = [
   },
   {
     id: 8,
-    marketId: 4, // 인동시장
     marketName: "인동시장",
     name: "국내산 무",
     weight: "1개",
@@ -121,7 +113,6 @@ const deadlineItems = [
   },
   {
     id: 9,
-    marketId: 14, // 선산시장
     marketName: "선산시장",
     name: "친환경 청양고추",
     weight: "150g~",
@@ -136,7 +127,6 @@ const deadlineItems = [
   },
   {
     id: 10,
-    marketId: 15, // 도량시장
     marketName: "도량시장",
     name: "국내산 애호박",
     weight: "1개",
