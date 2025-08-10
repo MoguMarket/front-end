@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import markets from "../../components/db/markets-db";
 import Header from "../../components/marketDetail/header";
+import ProductList from "../../components/marketDetail/market-product-list";
+import SearchBar from "../../components/home/search-bar";
 
 export default function MarketDetailPage() {
   const { id } = useParams();
@@ -30,6 +32,9 @@ export default function MarketDetailPage() {
   return (
     <div className="relative w-full max-w-[390px] mx-auto">
       <Header marketName={market.name} />
+      <div className="h-16" aria-hidden />
+      <SearchBar />
+      <ProductList products={market.products} />
     </div>
   );
 }
