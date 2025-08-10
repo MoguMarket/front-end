@@ -2,11 +2,13 @@ import { useState } from "react";
 import Slider from "react-slick";
 import recommendedItems from "../db/recommendedItems";
 import { useUserContext } from "../contexts/user-context";
+import { useNavigate } from "react-router-dom";
 import ProductCard from "./product-card";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 export default function AiRecommendList() {
+  const navigate = useNavigate();
   const { name } = useUserContext();
   const [items, setItems] = useState(recommendedItems);
 
@@ -16,10 +18,6 @@ export default function AiRecommendList() {
         item.id === id ? { ...item, liked: !item.liked } : item
       )
     );
-  };
-
-  const handleMarketClick = () => {
-    console.log("시장 페이지로 이동");
   };
 
   const settings = {
@@ -53,8 +51,10 @@ export default function AiRecommendList() {
               item.imageUrl ??
               "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg"
             }
-            marketName="구미새마을중앙시장"
-            onClickMarket={handleMarketClick}
+            marketName={item.marketName}
+            onClickMarket={() =>
+              navigate(`/marketDetailPage/${item.marketId ?? item.id}`)
+            }
             onToggleLike={() => toggleLike(item.id)}
           />
         ))}

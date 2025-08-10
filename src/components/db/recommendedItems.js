@@ -1,6 +1,7 @@
 const recommendedItems = [
   {
     id: 1,
+    marketName: "신평시장",
     name: "국내산 흙당근",
     weight: "1.5kg~",
     price: 3000,
@@ -13,6 +14,7 @@ const recommendedItems = [
   },
   {
     id: 2,
+    marketName: "신평시장",
     name: "국내산 감자",
     weight: "2kg~",
     price: 4800,
@@ -25,6 +27,7 @@ const recommendedItems = [
   },
   {
     id: 3,
+    marketName: "신평시장",
     name: "국내산 양파",
     weight: "1kg~",
     price: 2500,
@@ -37,6 +40,7 @@ const recommendedItems = [
   },
   {
     id: 4,
+    marketName: "신평시장",
     name: "국내산 마늘",
     weight: "500g~",
     price: 3800,
@@ -49,6 +53,7 @@ const recommendedItems = [
   },
   {
     id: 5,
+    marketName: "신평시장",
     name: "국내산 대파",
     weight: "1kg~",
     price: 2900,
@@ -61,6 +66,7 @@ const recommendedItems = [
   },
   {
     id: 6,
+    marketName: "구미새마을중앙시장",
     name: "친환경 상추",
     weight: "300g~",
     price: 1800,
@@ -73,6 +79,7 @@ const recommendedItems = [
   },
   {
     id: 7,
+    marketName: "구미새마을중앙시장",
     name: "친환경 깻잎",
     weight: "200g~",
     price: 2100,
@@ -85,6 +92,7 @@ const recommendedItems = [
   },
   {
     id: 8,
+    marketName: "구미새마을중앙시장",
     name: "국내산 무",
     weight: "1개",
     price: 3200,
@@ -97,6 +105,7 @@ const recommendedItems = [
   },
   {
     id: 9,
+    marketName: "구미공단종합시장",
     name: "국내산 애호박",
     weight: "1개",
     price: 2800,
@@ -109,6 +118,7 @@ const recommendedItems = [
   },
   {
     id: 10,
+    marketName: "구미공단종합시장",
     name: "국내산 청양고추",
     weight: "200g~",
     price: 2300,
