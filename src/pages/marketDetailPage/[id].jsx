@@ -35,7 +35,7 @@ export default function MarketDetailPage() {
   return (
     <div className="relative w-full max-w-[390px] mx-auto">
       <Header marketName={market.name} />
-      <div className="h-14" aria-hidden />
+      <div className="h-16" aria-hidden />
       <SearchBar />
       <ProductList marketId={market.marketId} products={market.products} />
     </div>
