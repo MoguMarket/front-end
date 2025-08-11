@@ -1,7 +1,7 @@
 // src/components/orderPage/orderCard.jsx
 
 import React from "react";
-import { CheckIcon } from "@heroicons/react/20/solid";
+import { CheckIcon } from "@heroicons/react/24/solid";
 
 export default function OrderCard({ item, onClick, onCancel }) {
     const {
@@ -40,7 +40,7 @@ export default function OrderCard({ item, onClick, onCancel }) {
         onCancel && onCancel(id);
     };
 
-    // 원형 진행 링
+    // 링 계산
     const r = 46;
     const C = 2 * Math.PI * r;
     const dashOffset = C * (1 - percent / 100);
@@ -54,7 +54,7 @@ export default function OrderCard({ item, onClick, onCancel }) {
                  rounded-sm border border-gray-200 bg-white py-0 pr-4 pl-0
                  shadow-sm transition active:scale-[0.99] overflow-hidden"
         >
-            {/* 왼쪽 이미지 (링은 그대로) */}
+            {/* 왼쪽 이미지 (링 크기는 유지) */}
             <div className="relative w-40 h-[9.5rem]">
                 <div className="absolute inset-0 overflow-hidden rounded-l-sm">
                     <img
@@ -112,41 +112,32 @@ export default function OrderCard({ item, onClick, onCancel }) {
             </div>
 
             {/* 오른쪽 본문 */}
-            <div className="min-w-0">
-                {/* 상단 라벨/취소 */}
-                <div className="flex items-start justify-between">
-                    <span className="text-xs font-medium text-emerald-600">
-                        {marketName}
-                    </span>
-                    {cancellable && !isReady && (
-                        <button
-                            type="button"
-                            onClick={handleCancel}
-                            className="text-xs text-gray-400 hover:text-gray-600"
-                            aria-label="주문 취소"
-                        >
-                            취소 &gt;
-                        </button>
-                    )}
-                </div>
+            <div
+                className="min-w-50 pr-10
+                [&_p]:leading-tight [&_p]:tracking-[-0.01em] [&_p]:tabular-nums"
+            >
+                {/* '진골마켓' */}
+                <p className="text-xs font-medium text-emerald-600">
+                    {marketName}
+                </p>
 
-                {/* 상품명 */}
-                <div className="mt-0.5 truncate text-[14px] leading-snug font-semibold text-gray-900">
-                    {productName}{" "}
+                {/* '국내산 홍당근 / 1.5kg' */}
+                <p className="mt-0.5 text-[14px] font-semibold text-gray-900 truncate">
+                    {productName}
                     <span className="font-normal text-gray-500">
+                        {" "}
                         / {weightLabel}
                     </span>
-                </div>
+                </p>
 
-                {/* 보조 라벨 */}
-                <div className="mt-0.5 text-[11px] text-gray-400">
+                {/* '결제 예정금액' */}
+                <p className="mt-0.5 text-[11px] text-gray-400">
                     결제 예정금액
-                </div>
+                </p>
 
-                {/* 가격 라인: 왼쪽(원가/할인) + 오른쪽(현재가) */}
-                <div className="mt-0.5 grid grid-cols-[1fr_auto] items-baseline gap-2">
-                    {/* 왼쪽: 공간이 모자라면 '원가'만 먼저 잘림, 할인율은 항상 노출 */}
-                    <div className="min-w-0 flex items-baseline gap-2">
+                {/* '3,780원 15%  3,213원' (왼쪽: 원가/할인, 오른쪽: 현재가) */}
+                <p className="mt-0.5 grid grid-cols-[1fr_auto] items-baseline gap-2">
+                    <span className="min-w-0 flex items-baseline gap-2">
                         {originalPrice != null && (
                             <span className="max-w-[8rem] truncate text-[12px] text-gray-400 line-through">
                                 {number(originalPrice)}원
@@ -157,17 +148,16 @@ export default function OrderCard({ item, onClick, onCancel }) {
                                 {Math.round(discountRate * 100)}%
                             </span>
                         )}
-                    </div>
+                    </span>
 
-                    {/* 오른쪽: 현재가는 항상 한 줄 유지 */}
                     <span className="shrink-0 text-[16px] font-extrabold whitespace-nowrap">
                         {number(price)}
                         <span className="ml-0.5 font-bold">원</span>
                     </span>
-                </div>
+                </p>
 
-                {/* 진행 상태 */}
-                <div className="mt-1 flex items-center gap-1.5 text-[12px]">
+                {/* '다음 단계까지 4.5kg' */}
+                <p className="mt-1 flex items-center gap-1.5 text-[12px]">
                     <CheckIcon
                         className="h-4 w-4 text-emerald-600 shrink-0"
                         aria-hidden="true"
@@ -176,7 +166,7 @@ export default function OrderCard({ item, onClick, onCancel }) {
                     <span className="font-semibold text-gray-900">
                         {stepLabel}
                     </span>
-                </div>
+                </p>
             </div>
         </div>
     );

@@ -47,7 +47,7 @@ export default function OrderList({
             {inProgress.length > 0 && (
                 <section>
                     {showSectionHeader && (
-                        <h2 className="mb-3 text-sm font-semibold text-emerald-600">
+                        <h2 className="-ml-[20px] -mt-3 w-[calc(100%+24px)] max-w-[calc(100vw-24px)] mx-auto mb-2 text-[13px] font-semibold" style={{ color: "#4CC554" }}>
                             진행 중
                         </h2>
                     )}
@@ -67,7 +67,7 @@ export default function OrderList({
             {ready.length > 0 && (
                 <section>
                     {showSectionHeader && (
-                        <h2 className="mb-3 text-sm font-semibold text-emerald-600">
+                        <h2 className="mb-3 text-sm font-semibold" style={{ color: "#4CC554"}}>
                             픽업 대기
                         </h2>
                     )}
