@@ -15,6 +15,7 @@ import OrderPage from "./pages/orderPage";
 import MyInfoPage from "./pages/myInfoPage";
 import MarketMapList from "./pages/marketMapList";
 import MarketDetailPage from "./pages/marketDetailPage/[id]";
+import ProductDetailPage from "./pages/produckDetailPage/[id]";
 
 function AppContent() {
   const { pathname } = useLocation();
@@ -38,7 +39,14 @@ function AppContent() {
           <Route path="/order" element={<OrderPage />} />
           <Route path="/myinfo" element={<MyInfoPage />} />
           <Route path="/marketMapList" element={<MarketMapList />} />
-          <Route path="/marketDetailPage/:id" element={<MarketDetailPage />} />
+          <Route
+            path="/marketDetailPage/:marketId"
+            element={<MarketDetailPage />}
+          />
+          <Route
+            path="/marketDetailPage/:marketId/product/:productId"
+            element={<ProductDetailPage />}
+          />
         </Routes>
       </div>
       {!isMapPage && <BottomNavBar />}

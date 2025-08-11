@@ -1,9 +1,16 @@
 // src/components/product-list.jsx
+import { useNavigate } from "react-router-dom";
 import MarketProductCard from "./market-product-card";
 
-export default function ProductList({ products }) {
+export default function ProductList({ products, marketId }) {
+  const navigate = useNavigate();
+
   const handleMarketClick = () => console.log("시장 페이지로 이동");
   const toggleLike = (id) => console.log(`${id} 상품 좋아요 토글`);
+
+  const goProductDetail = (productId) => {
+    navigate(`/marketDetailPage/${marketId}/product/${productId}`);
+  };
 
   return (
     <div className="grid grid-cols-2 gap-0 gap-y-3 pt-5 mx-auto justify-items-center">
@@ -21,6 +28,7 @@ export default function ProductList({ products }) {
           marketName={null}
           onClickMarket={handleMarketClick}
           onToggleLike={() => toggleLike(item.id)}
+          onClickCard={() => goProductDetail(item.id)}
         />
       ))}
     </div>

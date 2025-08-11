@@ -31,33 +31,40 @@ export default function AiRecommendList() {
 
   return (
     <div className="py-3 font-[Pretendard] tracking-[-0.025em]">
-      <h3 className=" text-md font-semibold mb-2">
+      <h3 className="text-md font-semibold mb-2">
         {name}님을 위한 <span className="text-green-600">AI 추천 상품</span>
       </h3>
 
-      {/* 여백 제거용 커스텀 클래스 */}
       <Slider {...settings} className="ai-slider">
-        {items.map((item) => (
-          <ProductCard
-            key={item.id}
-            name={item.name}
-            weight={item.weight}
-            originalPrice={item.originalPrice}
-            discountedPrice={item.price}
-            rating={item.rating}
-            reviewCount={item.reviews}
-            liked={item.liked}
-            imageUrl={
-              item.imageUrl ??
-              "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg"
-            }
-            marketName={item.marketName}
-            onClickMarket={() =>
-              navigate(`/marketDetailPage/${item.marketId ?? item.id}`)
-            }
-            onToggleLike={() => toggleLike(item.id)}
-          />
-        ))}
+        {items.map((item) => {
+          return (
+            <ProductCard
+              tCard
+              key={item.id}
+              name={item.name}
+              weight={item.weight}
+              originalPrice={item.originalPrice ?? item.originPrice ?? 0}
+              discountedPrice={item.discountedPrice ?? item.price ?? 0}
+              rating={item.rating}
+              reviewCount={item.reviewCount ?? item.reviews ?? 0}
+              liked={item.liked}
+              imageUrl={
+                item.imageUrl ??
+                "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg"
+              }
+              marketName={item.marketName}
+              onClickMarket={() =>
+                navigate(`/marketDetailPage/${item.marketId}`)
+              }
+              onToggleLike={() => toggleLike(item.id)}
+              onClickCard={() =>
+                navigate(
+                  `/marketDetailPage/${item.marketId}/product/${item.productId}`
+                )
+              } // ✅ 카드 클릭 시 제품 디테일
+            />
+          );
+        })}
       </Slider>
     </div>
   );

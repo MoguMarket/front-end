@@ -1,3 +1,4 @@
+// src/pages/marketDetailPage/[marketId].jsx (파일명은 예시)
 import { useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -7,13 +8,15 @@ import ProductList from "../../components/marketDetail/market-product-list";
 import SearchBar from "../../components/home/search-bar";
 
 export default function MarketDetailPage() {
-  const { id } = useParams();
+  const { marketId: marketIdParam } = useParams();
   const navigate = useNavigate();
 
-  const marketId = Number(id);
+  const marketId = Number(marketIdParam);
+
+  // ✅ marketId로 정확히 매칭
   const market = useMemo(
-    () => markets.find((m) => m.id === marketId),
-    [marketId]
+    () => markets.find((m) => m.marketId === marketId),
+    [marketId, markets]
   );
 
   if (!market) {
@@ -23,7 +26,7 @@ export default function MarketDetailPage() {
           뒤로가기
         </button>
         <div className="text-red-600">
-          해당 시장을 찾을 수 없습니다. (id: {id})
+          해당 시장을 찾을 수 없습니다. (marketId: {marketIdParam})
         </div>
       </div>
     );
@@ -32,9 +35,9 @@ export default function MarketDetailPage() {
   return (
     <div className="relative w-full max-w-[390px] mx-auto">
       <Header marketName={market.name} />
-      <div className="h-16" aria-hidden />
+      <div className="h-14" aria-hidden />
       <SearchBar />
-      <ProductList products={market.products} />
+      <ProductList marketId={market.marketId} products={market.products} />
     </div>
   );
 }
