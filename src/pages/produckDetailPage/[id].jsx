@@ -2,6 +2,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import SHOPS from "../../components/db/shops-db";
 import Header from "../../components/marketDetail/header";
+import ProductSale from "../../components/productDetail/product-sale";
 
 export default function ProductDetailPage() {
   const { marketId, productId } = useParams();
@@ -29,7 +30,7 @@ export default function ProductDetailPage() {
         alt={shop.name}
         className="w-full aspect-[4/3] object-cover rounded-b-lg"
       />
-
+      <ProductSale shop={shop} product={product} />
       {/* 이미지, 가격, 리뷰 등 상세 UI 구성 */}
     </div>
   );

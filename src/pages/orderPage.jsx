@@ -1,3 +1,11 @@
+// src/pages/orderPage.jsx
+
+import React from "react";
+
 export default function OrderPage() {
-  return <div>주문하기 페이지입니다.</div>;
+  return (
+    <main className="mx-auto max-w-md p-4">
+      <header></header>
+    </main>
+  );
 }
