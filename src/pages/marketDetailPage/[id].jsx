@@ -2,7 +2,7 @@
 import { useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import markets from "../../components/db/markets-db";
+import markets from "../../components/db/shops-db";
 import Header from "../../components/marketDetail/header";
 import ProductList from "../../components/marketDetail/market-product-list";
 import SearchBar from "../../components/home/search-bar";

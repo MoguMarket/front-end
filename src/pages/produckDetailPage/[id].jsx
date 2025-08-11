@@ -1,6 +1,7 @@
 // src/pages/productDetailPage.jsx
 import { useParams, useNavigate } from "react-router-dom";
-import MARKETS from "../../components/db/markets-db";
+import MARKETS from "../../components/db/shops-db";
+import Header from "../../components/marketDetail/header";
 
 export default function ProductDetailPage() {
   const { marketId, productId } = useParams();
@@ -22,9 +23,8 @@ export default function ProductDetailPage() {
 
   return (
     <div className="relative w-full max-w-[390px] mx-auto pt-14 px-4 pb-16">
-      {/* 필요하면 고정 헤더 재사용 */}
-      {/* <Header marketName={market.name} /> */}
-      {/* <div className="h-14" /> */}
+      <Header marketName={market.name} />
+      <div className="h-14" />
 
       <h1 className="text-lg font-semibold">{product.name}</h1>
       <p className="text-sm text-gray-500">{market.name}</p>

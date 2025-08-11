@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import MapMarketContainer from "../components/map/map-market-container";
-import markets from "../components/db/markets-db";
+import markets from "../components/db/marketPlace-db";
 
 // ===== 시연 모드 & 오프셋 =====
 const DEMO_MODE = true;

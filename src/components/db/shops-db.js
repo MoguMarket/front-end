@@ -1,14 +1,14 @@
-export const MARKETS = [
+export const SHOPS = [
   {
     id: 1,
-    marketId: 1,
-    name: "신평시장",
-    location: "경북 구미시",
+    marketId: 101,
+    name: "신평 과일가게",
+    location: "경북 구미시 신평동",
     lat: 36.1089,
     lng: 128.3445,
     products: [
       {
-        id: 101,
+        id: 10101,
         name: "국내산 흑당근",
         weight: "1.5kg~",
         originalPrice: 5000,
@@ -17,11 +17,10 @@ export const MARKETS = [
         rating: 4.82,
         reviewCount: 17,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 102,
+        id: 10102,
         name: "국내산 대파",
         weight: "1kg~",
         originalPrice: 3500,
@@ -30,11 +29,10 @@ export const MARKETS = [
         rating: 4.76,
         reviewCount: 22,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 103,
+        id: 10103,
         name: "국내산 감자",
         weight: "3kg~",
         originalPrice: 7200,
@@ -43,11 +41,10 @@ export const MARKETS = [
         rating: 4.92,
         reviewCount: 30,
         liked: true,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 104,
+        id: 10104,
         name: "친환경 오이",
         weight: "3개입",
         originalPrice: 4000,
@@ -56,11 +53,10 @@ export const MARKETS = [
         rating: 4.85,
         reviewCount: 15,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 105,
+        id: 10105,
         name: "국내산 양파",
         weight: "1.5kg~",
         originalPrice: 4200,
@@ -69,21 +65,20 @@ export const MARKETS = [
         rating: 4.68,
         reviewCount: 19,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
     ],
   },
   {
     id: 2,
-    marketId: 2,
-    name: "구미새마을중앙시장",
-    location: "경북 구미시",
+    marketId: 102,
+    name: "새마을 채소가게",
+    location: "경북 구미시 원평동",
     lat: 36.1161,
     lng: 128.3457,
     products: [
       {
-        id: 201,
+        id: 10201,
         name: "국내산 방울토마토",
         weight: "500g~",
         originalPrice: 4800,
@@ -92,11 +87,10 @@ export const MARKETS = [
         rating: 4.77,
         reviewCount: 18,
         liked: true,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 202,
+        id: 10202,
         name: "국내산 깻잎",
         weight: "200g~",
         originalPrice: 2800,
@@ -105,11 +99,10 @@ export const MARKETS = [
         rating: 4.74,
         reviewCount: 12,
         liked: true,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 203,
+        id: 10203,
         name: "국내산 무",
         weight: "1개",
         originalPrice: 3100,
@@ -118,11 +111,10 @@ export const MARKETS = [
         rating: 4.79,
         reviewCount: 11,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 204,
+        id: 10204,
         name: "친환경 청양고추",
         weight: "150g~",
         originalPrice: 2600,
@@ -131,11 +123,10 @@ export const MARKETS = [
         rating: 4.83,
         reviewCount: 9,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 205,
+        id: 10205,
         name: "국내산 애호박",
         weight: "1개",
         originalPrice: 2800,
@@ -144,21 +135,20 @@ export const MARKETS = [
         rating: 4.76,
         reviewCount: 13,
         liked: true,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
     ],
   },
   {
     id: 3,
-    marketId: 3,
-    name: "구미공단종합시장",
-    location: "경북 구미시",
+    marketId: 103,
+    name: "공단 청과점",
+    location: "경북 구미시 공단동",
     lat: 36.1125,
     lng: 128.3848,
     products: [
       {
-        id: 301,
+        id: 10301,
         name: "국내산 사과",
         weight: "5개입",
         originalPrice: 6500,
@@ -167,11 +157,10 @@ export const MARKETS = [
         rating: 4.88,
         reviewCount: 21,
         liked: true,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 302,
+        id: 10302,
         name: "국내산 배추",
         weight: "1포기",
         originalPrice: 3500,
@@ -180,11 +169,10 @@ export const MARKETS = [
         rating: 4.8,
         reviewCount: 14,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 303,
+        id: 10303,
         name: "친환경 시금치",
         weight: "300g~",
         originalPrice: 3500,
@@ -193,11 +181,10 @@ export const MARKETS = [
         rating: 4.81,
         reviewCount: 14,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 304,
+        id: 10304,
         name: "국내산 마늘",
         weight: "1망",
         originalPrice: 7000,
@@ -206,11 +193,10 @@ export const MARKETS = [
         rating: 4.85,
         reviewCount: 19,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 305,
+        id: 10305,
         name: "국내산 고구마",
         weight: "2kg~",
         originalPrice: 8000,
@@ -219,22 +205,20 @@ export const MARKETS = [
         rating: 4.9,
         reviewCount: 22,
         liked: true,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
     ],
   },
-
   {
     id: 4,
-    marketId: 4,
-    name: "금오시장",
-    location: "경북 구미시",
+    marketId: 104,
+    name: "금오 버섯가게",
+    location: "경북 구미시 금오동",
     lat: 36.1155,
     lng: 128.3301,
     products: [
       {
-        id: 401,
+        id: 10401,
         name: "국내산 새송이",
         weight: "400g~",
         originalPrice: 3600,
@@ -243,11 +227,10 @@ export const MARKETS = [
         rating: 4.84,
         reviewCount: 12,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 402,
+        id: 10402,
         name: "국내산 상추",
         weight: "300g~",
         originalPrice: 2400,
@@ -256,11 +239,10 @@ export const MARKETS = [
         rating: 4.7,
         reviewCount: 10,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 403,
+        id: 10403,
         name: "국내산 가지",
         weight: "3개입",
         originalPrice: 3000,
@@ -269,11 +251,10 @@ export const MARKETS = [
         rating: 4.73,
         reviewCount: 9,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 404,
+        id: 10404,
         name: "친환경 미나리",
         weight: "300g~",
         originalPrice: 3200,
@@ -282,11 +263,10 @@ export const MARKETS = [
         rating: 4.86,
         reviewCount: 8,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 405,
+        id: 10405,
         name: "국내산 청경채",
         weight: "300g~",
         originalPrice: 2600,
@@ -295,21 +275,20 @@ export const MARKETS = [
         rating: 4.72,
         reviewCount: 7,
         liked: true,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
     ],
   },
   {
     id: 5,
-    marketId: 5,
-    name: "선산봉황시장",
-    location: "경북 구미시",
+    marketId: 105,
+    name: "선산봉황 과일가게",
+    location: "경북 구미시 선산읍",
     lat: 36.243,
     lng: 128.3005,
     products: [
       {
-        id: 501,
+        id: 10501,
         name: "국내산 배",
         weight: "5개입",
         originalPrice: 7000,
@@ -318,11 +297,10 @@ export const MARKETS = [
         rating: 4.81,
         reviewCount: 16,
         liked: true,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 502,
+        id: 10502,
         name: "국내산 파프리카",
         weight: "3개입",
         originalPrice: 4200,
@@ -331,11 +309,10 @@ export const MARKETS = [
         rating: 4.76,
         reviewCount: 12,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 503,
+        id: 10503,
         name: "국내산 양배추",
         weight: "1통",
         originalPrice: 3500,
@@ -344,11 +321,10 @@ export const MARKETS = [
         rating: 4.69,
         reviewCount: 11,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 504,
+        id: 10504,
         name: "친환경 부추",
         weight: "300g~",
         originalPrice: 2800,
@@ -357,11 +333,10 @@ export const MARKETS = [
         rating: 4.8,
         reviewCount: 9,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 505,
+        id: 10505,
         name: "국내산 당근",
         weight: "1kg~",
         originalPrice: 3800,
@@ -370,21 +345,20 @@ export const MARKETS = [
         rating: 4.77,
         reviewCount: 13,
         liked: true,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
     ],
   },
   {
     id: 6,
-    marketId: 6,
-    name: "원평시장",
-    location: "경북 구미시",
+    marketId: 106,
+    name: "원평 채소가게",
+    location: "경북 구미시 원평동",
     lat: 36.1012,
     lng: 128.3566,
     products: [
       {
-        id: 601,
+        id: 10601,
         name: "국내산 버섯 모둠",
         weight: "500g~",
         originalPrice: 5000,
@@ -393,11 +367,10 @@ export const MARKETS = [
         rating: 4.86,
         reviewCount: 15,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 602,
+        id: 10602,
         name: "국내산 브로콜리",
         weight: "1개",
         originalPrice: 3600,
@@ -406,11 +379,10 @@ export const MARKETS = [
         rating: 4.74,
         reviewCount: 10,
         liked: true,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 603,
+        id: 10603,
         name: "국내산 토마토",
         weight: "1kg~",
         originalPrice: 4800,
@@ -419,11 +391,10 @@ export const MARKETS = [
         rating: 4.79,
         reviewCount: 14,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 604,
+        id: 10604,
         name: "친환경 당근",
         weight: "1kg~",
         originalPrice: 4000,
@@ -432,11 +403,10 @@ export const MARKETS = [
         rating: 4.75,
         reviewCount: 9,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 605,
+        id: 10605,
         name: "국내산 콩나물",
         weight: "500g~",
         originalPrice: 1800,
@@ -445,21 +415,20 @@ export const MARKETS = [
         rating: 4.7,
         reviewCount: 8,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
     ],
   },
   {
     id: 7,
-    marketId: 7,
-    name: "인동시장",
-    location: "경북 구미시",
+    marketId: 107,
+    name: "인동 채소가게",
+    location: "경북 구미시 인동동",
     lat: 36.1048,
     lng: 128.4089,
     products: [
       {
-        id: 701,
+        id: 10701,
         name: "국내산 깐마늘",
         weight: "500g~",
         originalPrice: 7600,
@@ -468,11 +437,10 @@ export const MARKETS = [
         rating: 4.89,
         reviewCount: 18,
         liked: true,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 702,
+        id: 10702,
         name: "국내산 양파망",
         weight: "1kg~",
         originalPrice: 3800,
@@ -481,11 +449,10 @@ export const MARKETS = [
         rating: 4.72,
         reviewCount: 12,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 703,
+        id: 10703,
         name: "국내산 애느타리버섯",
         weight: "300g~",
         originalPrice: 2600,
@@ -494,11 +461,10 @@ export const MARKETS = [
         rating: 4.73,
         reviewCount: 10,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 704,
+        id: 10704,
         name: "친환경 시금치",
         weight: "300g~",
         originalPrice: 3200,
@@ -507,11 +473,10 @@ export const MARKETS = [
         rating: 4.8,
         reviewCount: 9,
         liked: true,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 705,
+        id: 10705,
         name: "국내산 단호박",
         weight: "1개",
         originalPrice: 4200,
@@ -520,21 +485,20 @@ export const MARKETS = [
         rating: 4.78,
         reviewCount: 11,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
     ],
   },
   {
     id: 8,
-    marketId: 8,
-    name: "옥계시장",
-    location: "경북 구미시",
+    marketId: 108,
+    name: "옥계 농산물가게",
+    location: "경북 구미시 옥계동",
     lat: 36.1234,
     lng: 128.4211,
     products: [
       {
-        id: 801,
+        id: 10801,
         name: "국내산 무청",
         weight: "1단",
         originalPrice: 2500,
@@ -543,11 +507,10 @@ export const MARKETS = [
         rating: 4.68,
         reviewCount: 7,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 802,
+        id: 10802,
         name: "국내산 로메인",
         weight: "300g~",
         originalPrice: 3000,
@@ -556,11 +519,10 @@ export const MARKETS = [
         rating: 4.74,
         reviewCount: 9,
         liked: true,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 803,
+        id: 10803,
         name: "국내산 새송이 버섯",
         weight: "400g~",
         originalPrice: 3400,
@@ -569,11 +531,10 @@ export const MARKETS = [
         rating: 4.75,
         reviewCount: 8,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 804,
+        id: 10804,
         name: "친환경 열무",
         weight: "1단",
         originalPrice: 2800,
@@ -582,11 +543,10 @@ export const MARKETS = [
         rating: 4.79,
         reviewCount: 10,
         liked: true,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 805,
+        id: 10805,
         name: "국내산 청양고추",
         weight: "200g~",
         originalPrice: 2700,
@@ -595,21 +555,20 @@ export const MARKETS = [
         rating: 4.76,
         reviewCount: 9,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
     ],
   },
   {
     id: 9,
-    marketId: 9,
-    name: "형곡시장",
-    location: "경북 구미시",
+    marketId: 109,
+    name: "형곡 야채가게",
+    location: "경북 구미시 형곡동",
     lat: 36.1189,
     lng: 128.3602,
     products: [
       {
-        id: 901,
+        id: 10901,
         name: "국내산 깻잎",
         weight: "200g~",
         originalPrice: 2600,
@@ -618,11 +577,10 @@ export const MARKETS = [
         rating: 4.73,
         reviewCount: 10,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 902,
+        id: 10902,
         name: "국내산 오이",
         weight: "3개입",
         originalPrice: 3900,
@@ -631,11 +589,10 @@ export const MARKETS = [
         rating: 4.71,
         reviewCount: 8,
         liked: true,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 903,
+        id: 10903,
         name: "국내산 대파",
         weight: "1kg~",
         originalPrice: 3300,
@@ -644,11 +601,10 @@ export const MARKETS = [
         rating: 4.74,
         reviewCount: 11,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 904,
+        id: 10904,
         name: "친환경 샐러리",
         weight: "1단",
         originalPrice: 3700,
@@ -657,11 +613,10 @@ export const MARKETS = [
         rating: 4.72,
         reviewCount: 7,
         liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 905,
+        id: 10905,
         name: "국내산 감자",
         weight: "3kg~",
         originalPrice: 6400,
@@ -670,21 +625,20 @@ export const MARKETS = [
         rating: 4.78,
         reviewCount: 13,
         liked: true,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
     ],
   },
   {
     id: 10,
-    marketId: 10,
-    name: "진평시장",
-    location: "경북 구미시",
+    marketId: 110,
+    name: "진평 채소가게",
+    location: "경북 구미시 진평동",
     lat: 36.0911,
     lng: 128.3715,
     products: [
       {
-        id: 1001,
+        id: 11001,
         name: "국내산 방울토마토",
         weight: "1kg~",
         originalPrice: 5000,
@@ -693,63 +647,20 @@ export const MARKETS = [
         rating: 4.83,
         reviewCount: 16,
         liked: true,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        imageUrl: "/images/carrot.jpg",
       },
       {
-        id: 1002,
+        id: 11002,
         name: "국내산 가지",
         weight: "3개입",
         originalPrice: 3100,
         discountRate: 20,
         discountedPrice: 2480,
         rating: 4.7,
-        reviewCount: 9,
-        liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
-      },
-      {
-        id: 1003,
-        name: "국내산 양상추",
-        weight: "1통",
-        originalPrice: 3000,
-        discountRate: 26,
-        discountedPrice: 2220,
-        rating: 4.75,
-        reviewCount: 10,
-        liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
-      },
-      {
-        id: 1004,
-        name: "친환경 비트",
-        weight: "1개",
-        originalPrice: 4200,
-        discountRate: 23,
-        discountedPrice: 3234,
-        rating: 4.79,
-        reviewCount: 8,
-        liked: true,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
-      },
-      {
-        id: 1005,
-        name: "국내산 풋고추",
-        weight: "200g~",
-        originalPrice: 2900,
-        discountRate: 21,
-        discountedPrice: 2291,
-        rating: 4.72,
-        reviewCount: 9,
-        liked: false,
-        imageUrl:
-          "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg",
+        reviewCount: 12,
       },
     ],
   },
 ];
 
-export default MARKETS;
+export default SHOPS;

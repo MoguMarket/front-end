@@ -21,12 +21,17 @@ function AppContent() {
   const { pathname } = useLocation();
   const isMapPage = pathname === "/marketMapList";
 
-  const matchDetail = useMatch("/marketDetailPage/:id");
-  const isDetailPage = Boolean(matchDetail);
+  const matchMarketDetail = useMatch("/marketDetailPage/:id");
+  const isDetailPage = Boolean(matchMarketDetail);
+
+  const matchProductDetail = useMatch(
+    "/marketDetailPage/:marketId/product/:productId"
+  );
+  const isProductDetailPage = Boolean(matchProductDetail);
 
   return (
     <div className="relative w-full max-w-[390px] mx-auto bg-white">
-      {!isMapPage && !isDetailPage && <Header />}
+      {!isMapPage && !isDetailPage && !isProductDetailPage && <Header />}
       <div
         className={`min-h-screen ${
           isMapPage || isDetailPage ? "" : "pt-16 pb-16 px-4"
