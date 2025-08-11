@@ -1,16 +1,16 @@
 // src/pages/productDetailPage.jsx
 import { useParams, useNavigate } from "react-router-dom";
-import MARKETS from "../../components/db/shops-db";
+import SHOPS from "../../components/db/shops-db";
 import Header from "../../components/marketDetail/header";
 
 export default function ProductDetailPage() {
   const { marketId, productId } = useParams();
   const navigate = useNavigate();
 
-  const market = MARKETS.find((m) => m.marketId === Number(marketId));
-  const product = market?.products.find((p) => p.id === Number(productId));
+  const shop = SHOPS.find((m) => m.marketId === Number(marketId));
+  const product = shop?.products.find((p) => p.id === Number(productId));
 
-  if (!market || !product) {
+  if (!shop || !product) {
     return (
       <div className="p-6">
         <button onClick={() => navigate(-1)} className="mb-3 text-sm underline">
@@ -22,12 +22,13 @@ export default function ProductDetailPage() {
   }
 
   return (
-    <div className="relative w-full max-w-[390px] mx-auto pt-14 px-4 pb-16">
-      <Header marketName={market.name} />
-      <div className="h-14" />
-
-      <h1 className="text-lg font-semibold">{product.name}</h1>
-      <p className="text-sm text-gray-500">{market.name}</p>
+    <div className="relative w-full max-w-[390px] mx-auto pt-14  pb-16">
+      <Header marketName={shop.name} />
+      <img
+        src={product.imageUrl}
+        alt={shop.name}
+        className="w-full aspect-[4/3] object-cover rounded-b-lg"
+      />
 
       {/* 이미지, 가격, 리뷰 등 상세 UI 구성 */}
     </div>

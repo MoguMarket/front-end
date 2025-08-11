@@ -34,7 +34,9 @@ function AppContent() {
       {!isMapPage && !isDetailPage && !isProductDetailPage && <Header />}
       <div
         className={`min-h-screen ${
-          isMapPage || isDetailPage ? "" : "pt-16 pb-16 px-4"
+          isMapPage || isDetailPage || isProductDetailPage
+            ? ""
+            : "pt-16 pb-16 px-4"
         }`}
       >
         <Routes>
