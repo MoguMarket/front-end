@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 
 export default function SearchBar({ placeholder = "상품을 검색하세요" }) {
   return (
-    <div className="relative left-1/2 -translate-x-1/2 w-screen px-4">
+    <div className="relative left-1/2 -translate-x-1/2 w-screen px-4 mt-[-5px]">
       <form
         onSubmit={(e) => e.preventDefault()}
         className="relative mt-2 md:mt-3 w-full mx-auto
