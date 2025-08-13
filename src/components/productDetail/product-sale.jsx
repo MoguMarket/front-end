@@ -25,7 +25,7 @@ export default function ProductSale({ shop, product }) {
       <div className="mb-3">
         <button
           type="button"
-          onClick={() => navigate(`/marketDetailPage/${shop.marketId}`)}
+          onClick={() => navigate(`/marketDetailPage/${shop.shopId}`)}
           className="inline-flex items-center text-green-600 text-sm font-semibold cursor-pointer"
         >
           {shop.name}

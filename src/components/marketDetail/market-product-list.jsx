@@ -2,14 +2,14 @@
 import { useNavigate } from "react-router-dom";
 import MarketProductCard from "./market-product-card";
 
-export default function ProductList({ products, marketId }) {
+export default function ProductList({ products, shopId }) {
   const navigate = useNavigate();
 
   const handleMarketClick = () => console.log("시장 페이지로 이동");
   const toggleLike = (id) => console.log(`${id} 상품 좋아요 토글`);
 
   const goProductDetail = (productId) => {
-    navigate(`/marketDetailPage/${marketId}/product/${productId}`);
+    navigate(`/marketDetailPage/${shopId}/product/${productId}`);
   };
 
   return (

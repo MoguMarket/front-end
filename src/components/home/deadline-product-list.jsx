@@ -42,10 +42,10 @@ export default function DeadlineProductsList() {
             liked={!!item.liked}
             imageUrl={item.imageUrl}
             marketName={item.marketName}
-            onClickMarket={() => navigate(`/marketDetailPage/${item.marketId}`)}
+            onClickMarket={() => navigate(`/marketDetailPage/${item.shopId}`)}
             onClickCard={() =>
               navigate(
-                `/marketDetailPage/${item.marketId}/product/${item.productId}`
+                `/marketDetailPage/${item.shopId}/product/${item.productId}`
               )
             }
             onToggleLike={() => toggleLike(item.id)}

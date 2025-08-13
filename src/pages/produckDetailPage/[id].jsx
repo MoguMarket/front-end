@@ -3,12 +3,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import SHOPS from "../../components/db/shops-db";
 import Header from "../../components/marketDetail/header";
 import ProductSale from "../../components/productDetail/product-sale";
+import MoguProgress from "../../components/productDetail/mogu-progress";
+import ProductDetailBottom from "../../components/productDetail/product-detail-bottom";
 
 export default function ProductDetailPage() {
-  const { marketId, productId } = useParams();
+  const { shopId, productId } = useParams();
   const navigate = useNavigate();
 
-  const shop = SHOPS.find((m) => m.marketId === Number(marketId));
+  const shop = SHOPS.find((m) => m.shopId === Number(shopId));
   const product = shop?.products.find((p) => p.id === Number(productId));
 
   if (!shop || !product) {
@@ -31,7 +33,8 @@ export default function ProductDetailPage() {
         className="w-full aspect-[4/3] object-cover rounded-b-lg"
       />
       <ProductSale shop={shop} product={product} />
-      {/* 이미지, 가격, 리뷰 등 상세 UI 구성 */}
+      <MoguProgress />
+      <ProductDetailBottom shop={shop} product={product} />
     </div>
   );
 }

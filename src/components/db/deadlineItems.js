@@ -1,7 +1,7 @@
 const deadlineItems = [
   {
     id: 1,
-    marketId: 107,
+    shopId: 107,
     productId: 10704,
     marketName: "인동 채소가게",
     name: "친환경 시금치",
@@ -16,7 +16,7 @@ const deadlineItems = [
   },
   {
     id: 2,
-    marketId: 104,
+    shopId: 104,
     productId: 10405,
     marketName: "금오 버섯가게",
     name: "국내산 청경채",
@@ -31,7 +31,7 @@ const deadlineItems = [
   },
   {
     id: 3,
-    marketId: 106,
+    shopId: 106,
     productId: 10601,
     marketName: "원평 채소가게",
     name: "국내산 버섯 모둠",
@@ -46,7 +46,7 @@ const deadlineItems = [
   },
   {
     id: 4,
-    marketId: 102,
+    shopId: 102,
     productId: 10205,
     marketName: "새마을 채소가게",
     name: "국내산 애호박",
@@ -61,7 +61,7 @@ const deadlineItems = [
   },
   {
     id: 5,
-    marketId: 108,
+    shopId: 108,
     productId: 10804,
     marketName: "옥계 농산물가게",
     name: "친환경 열무",
@@ -76,7 +76,7 @@ const deadlineItems = [
   },
   {
     id: 6,
-    marketId: 105,
+    shopId: 105,
     productId: 10501,
     marketName: "선산봉황 과일가게",
     name: "국내산 배",

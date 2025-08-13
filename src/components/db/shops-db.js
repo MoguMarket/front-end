@@ -1,7 +1,7 @@
 export const SHOPS = [
   {
     id: 1,
-    marketId: 101,
+    shopId: 101,
     name: "신평 과일가게",
     location: "경북 구미시 신평동",
     lat: 36.1089,
@@ -71,7 +71,7 @@ export const SHOPS = [
   },
   {
     id: 2,
-    marketId: 102,
+    shopId: 102,
     name: "새마을 채소가게",
     location: "경북 구미시 원평동",
     lat: 36.1161,
@@ -141,7 +141,7 @@ export const SHOPS = [
   },
   {
     id: 3,
-    marketId: 103,
+    shopId: 103,
     name: "공단 청과점",
     location: "경북 구미시 공단동",
     lat: 36.1125,
@@ -211,7 +211,7 @@ export const SHOPS = [
   },
   {
     id: 4,
-    marketId: 104,
+    shopId: 104,
     name: "금오 버섯가게",
     location: "경북 구미시 금오동",
     lat: 36.1155,
@@ -281,7 +281,7 @@ export const SHOPS = [
   },
   {
     id: 5,
-    marketId: 105,
+    shopId: 105,
     name: "선산봉황 과일가게",
     location: "경북 구미시 선산읍",
     lat: 36.243,
@@ -351,7 +351,7 @@ export const SHOPS = [
   },
   {
     id: 6,
-    marketId: 106,
+    shopId: 106,
     name: "원평 채소가게",
     location: "경북 구미시 원평동",
     lat: 36.1012,
@@ -421,7 +421,7 @@ export const SHOPS = [
   },
   {
     id: 7,
-    marketId: 107,
+    shopId: 107,
     name: "인동 채소가게",
     location: "경북 구미시 인동동",
     lat: 36.1048,
@@ -491,7 +491,7 @@ export const SHOPS = [
   },
   {
     id: 8,
-    marketId: 108,
+    shopId: 108,
     name: "옥계 농산물가게",
     location: "경북 구미시 옥계동",
     lat: 36.1234,
@@ -561,7 +561,7 @@ export const SHOPS = [
   },
   {
     id: 9,
-    marketId: 109,
+    shopId: 109,
     name: "형곡 야채가게",
     location: "경북 구미시 형곡동",
     lat: 36.1189,
@@ -631,7 +631,7 @@ export const SHOPS = [
   },
   {
     id: 10,
-    marketId: 110,
+    shopId: 110,
     name: "진평 채소가게",
     location: "경북 구미시 진평동",
     lat: 36.0911,

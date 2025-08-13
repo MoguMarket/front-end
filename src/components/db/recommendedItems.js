@@ -1,7 +1,7 @@
 const deadlineItems = [
   {
     id: 1,
-    marketId: 102,
+    shopId: 102,
     productId: 10204,
     marketName: "새마을 채소가게",
     name: "친환경 청양고추",
@@ -16,7 +16,7 @@ const deadlineItems = [
   },
   {
     id: 2,
-    marketId: 106,
+    shopId: 106,
     productId: 10603,
     marketName: "원평 채소가게",
     name: "국내산 토마토",
@@ -31,7 +31,7 @@ const deadlineItems = [
   },
   {
     id: 3,
-    marketId: 109,
+    shopId: 109,
     productId: 10905,
     marketName: "형곡 야채가게",
     name: "국내산 감자",
@@ -46,7 +46,7 @@ const deadlineItems = [
   },
   {
     id: 4,
-    marketId: 101,
+    shopId: 101,
     productId: 10105,
     marketName: "신평 과일가게",
     name: "국내산 양파",
@@ -61,7 +61,7 @@ const deadlineItems = [
   },
   {
     id: 5,
-    marketId: 108,
+    shopId: 108,
     productId: 10802,
     marketName: "옥계 농산물가게",
     name: "국내산 로메인",
@@ -76,7 +76,7 @@ const deadlineItems = [
   },
   {
     id: 6,
-    marketId: 105,
+    shopId: 105,
     productId: 10505,
     marketName: "선산봉황 과일가게",
     name: "국내산 당근",

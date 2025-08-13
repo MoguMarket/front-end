@@ -16,6 +16,7 @@ import MyInfoPage from "./pages/myInfoPage";
 import MarketMapList from "./pages/marketMapList";
 import MarketDetailPage from "./pages/marketDetailPage/[id]";
 import ProductDetailPage from "./pages/produckDetailPage/[id]";
+import GroupBuyPage from "./pages/produckDetailPage/groupBuyPage";
 
 function AppContent() {
   const { pathname } = useLocation();
@@ -25,7 +26,7 @@ function AppContent() {
   const isDetailPage = Boolean(matchMarketDetail);
 
   const matchProductDetail = useMatch(
-    "/marketDetailPage/:marketId/product/:productId"
+    "/marketDetailPage/:shopId/product/:productId"
   );
   const isProductDetailPage = Boolean(matchProductDetail);
 
@@ -47,16 +48,20 @@ function AppContent() {
           <Route path="/myinfo" element={<MyInfoPage />} />
           <Route path="/marketMapList" element={<MarketMapList />} />
           <Route
-            path="/marketDetailPage/:marketId"
+            path="/marketDetailPage/:shopId"
             element={<MarketDetailPage />}
           />
           <Route
-            path="/marketDetailPage/:marketId/product/:productId"
+            path="/marketDetailPage/:shopId/product/:productId"
             element={<ProductDetailPage />}
+          />
+          <Route
+            path="/marketDetailPage/:shopId/product/:productId/groupBuy"
+            element={<GroupBuyPage />}
           />
         </Routes>
       </div>
-      {!isMapPage && <BottomNavBar />}
+      {!isMapPage && !isProductDetailPage && <BottomNavBar />}
     </div>
   );
 }
