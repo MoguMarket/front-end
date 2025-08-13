@@ -30,6 +30,11 @@ function AppContent() {
   );
   const isProductDetailPage = Boolean(matchProductDetail);
 
+  const matchGroupBuyPage = useMatch(
+    "/marketDetailPage/:shopId/product/:productId/groupBuy"
+  );
+  const isGroupBuyPage = Boolean(matchGroupBuyPage);
+
   return (
     <div className="relative w-full max-w-[390px] mx-auto bg-white">
       {!isMapPage && !isDetailPage && !isProductDetailPage && <Header />}
@@ -61,7 +66,9 @@ function AppContent() {
           />
         </Routes>
       </div>
-      {!isMapPage && !isProductDetailPage && <BottomNavBar />}
+      {!isMapPage && !isProductDetailPage && !isGroupBuyPage && (
+        <BottomNavBar />
+      )}
     </div>
   );
 }

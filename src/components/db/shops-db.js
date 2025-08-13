@@ -18,6 +18,8 @@ export const SHOPS = [
         reviewCount: 17,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10102,
@@ -30,6 +32,8 @@ export const SHOPS = [
         reviewCount: 22,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10103,
@@ -42,6 +46,8 @@ export const SHOPS = [
         reviewCount: 30,
         liked: true,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10104,
@@ -54,6 +60,8 @@ export const SHOPS = [
         reviewCount: 15,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10105,
@@ -66,6 +74,8 @@ export const SHOPS = [
         reviewCount: 19,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
     ],
   },
@@ -88,6 +98,8 @@ export const SHOPS = [
         reviewCount: 18,
         liked: true,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10202,
@@ -100,6 +112,8 @@ export const SHOPS = [
         reviewCount: 12,
         liked: true,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10203,
@@ -112,6 +126,8 @@ export const SHOPS = [
         reviewCount: 11,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10204,
@@ -124,6 +140,8 @@ export const SHOPS = [
         reviewCount: 9,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10205,
@@ -136,6 +154,8 @@ export const SHOPS = [
         reviewCount: 13,
         liked: true,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
     ],
   },
@@ -158,6 +178,8 @@ export const SHOPS = [
         reviewCount: 21,
         liked: true,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10302,
@@ -170,6 +192,8 @@ export const SHOPS = [
         reviewCount: 14,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10303,
@@ -182,6 +206,8 @@ export const SHOPS = [
         reviewCount: 14,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10304,
@@ -194,6 +220,8 @@ export const SHOPS = [
         reviewCount: 19,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10305,
@@ -206,6 +234,8 @@ export const SHOPS = [
         reviewCount: 22,
         liked: true,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
     ],
   },
@@ -228,6 +258,8 @@ export const SHOPS = [
         reviewCount: 12,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10402,
@@ -240,6 +272,8 @@ export const SHOPS = [
         reviewCount: 10,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10403,
@@ -252,6 +286,8 @@ export const SHOPS = [
         reviewCount: 9,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10404,
@@ -264,6 +300,8 @@ export const SHOPS = [
         reviewCount: 8,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10405,
@@ -276,6 +314,8 @@ export const SHOPS = [
         reviewCount: 7,
         liked: true,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
     ],
   },
@@ -298,6 +338,8 @@ export const SHOPS = [
         reviewCount: 16,
         liked: true,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10502,
@@ -310,6 +352,8 @@ export const SHOPS = [
         reviewCount: 12,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10503,
@@ -322,6 +366,8 @@ export const SHOPS = [
         reviewCount: 11,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10504,
@@ -334,6 +380,8 @@ export const SHOPS = [
         reviewCount: 9,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10505,
@@ -346,6 +394,8 @@ export const SHOPS = [
         reviewCount: 13,
         liked: true,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
     ],
   },
@@ -368,6 +418,8 @@ export const SHOPS = [
         reviewCount: 15,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10602,
@@ -380,6 +432,8 @@ export const SHOPS = [
         reviewCount: 10,
         liked: true,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10603,
@@ -392,6 +446,8 @@ export const SHOPS = [
         reviewCount: 14,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10604,
@@ -404,6 +460,8 @@ export const SHOPS = [
         reviewCount: 9,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10605,
@@ -416,6 +474,8 @@ export const SHOPS = [
         reviewCount: 8,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
     ],
   },
@@ -438,6 +498,8 @@ export const SHOPS = [
         reviewCount: 18,
         liked: true,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10702,
@@ -450,6 +512,8 @@ export const SHOPS = [
         reviewCount: 12,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10703,
@@ -462,6 +526,8 @@ export const SHOPS = [
         reviewCount: 10,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10704,
@@ -474,6 +540,8 @@ export const SHOPS = [
         reviewCount: 9,
         liked: true,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10705,
@@ -486,6 +554,8 @@ export const SHOPS = [
         reviewCount: 11,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
     ],
   },
@@ -508,6 +578,8 @@ export const SHOPS = [
         reviewCount: 7,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10802,
@@ -520,6 +592,8 @@ export const SHOPS = [
         reviewCount: 9,
         liked: true,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10803,
@@ -532,6 +606,8 @@ export const SHOPS = [
         reviewCount: 8,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10804,
@@ -544,6 +620,8 @@ export const SHOPS = [
         reviewCount: 10,
         liked: true,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10805,
@@ -556,6 +634,8 @@ export const SHOPS = [
         reviewCount: 9,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
     ],
   },
@@ -578,6 +658,8 @@ export const SHOPS = [
         reviewCount: 10,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10902,
@@ -590,6 +672,8 @@ export const SHOPS = [
         reviewCount: 8,
         liked: true,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10903,
@@ -602,6 +686,8 @@ export const SHOPS = [
         reviewCount: 11,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10904,
@@ -614,6 +700,8 @@ export const SHOPS = [
         reviewCount: 7,
         liked: false,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 10905,
@@ -626,6 +714,8 @@ export const SHOPS = [
         reviewCount: 13,
         liked: true,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
     ],
   },
@@ -648,6 +738,8 @@ export const SHOPS = [
         reviewCount: 16,
         liked: true,
         imageUrl: "/images/carrot.jpg",
+        progressCurrent: 3,
+        progressMax: 15,
       },
       {
         id: 11002,
@@ -658,6 +750,8 @@ export const SHOPS = [
         discountedPrice: 2480,
         rating: 4.7,
         reviewCount: 12,
+        progressCurrent: 3,
+        progressMax: 15,
       },
     ],
   },
