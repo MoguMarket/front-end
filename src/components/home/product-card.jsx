@@ -12,14 +12,28 @@ export default function ProductCard({
   marketName,
   onClickMarket,
   onToggleLike,
+  onClickCard, // ⬅️ 추가
 }) {
   const discountRate = Math.round(
     ((originalPrice - discountedPrice) / originalPrice) * 100
   );
 
+  const handleKey = (e) => {
+    if ((e.key === "Enter" || e.key === " ") && onClickCard) {
+      e.preventDefault();
+      onClickCard();
+    }
+  };
+
   return (
-    // 바깥 여백/패딩 제거, 이미지가 카드에 딱 붙도록 overflow-hidden
-    <div className="bg-white rounded-xl relative border border-gray-200 overflow-hidden mx-1">
+    // 카드 전체를 클릭 타겟으로
+    <div
+      className="bg-white rounded-xl relative border border-gray-200 overflow-hidden mx-1 cursor-pointer select-none"
+      role="button"
+      tabIndex={0}
+      onClick={onClickCard}
+      onKeyDown={handleKey}
+    >
       {/* 이미지: 가로 전체 + 비율 유지 */}
       <div className="relative w-full aspect-[4/3]">
         <img
@@ -30,7 +44,10 @@ export default function ProductCard({
         />
         <button
           type="button"
-          onClick={onToggleLike}
+          onClick={(e) => {
+            e.stopPropagation(); // 카드 클릭으로 전파 방지
+            onToggleLike?.();
+          }}
           className="absolute bottom-2 right-2 bg-white rounded-full p-1"
           aria-label="좋아요"
         >
@@ -47,7 +64,10 @@ export default function ProductCard({
         {marketName && (
           <button
             type="button"
-            onClick={onClickMarket}
+            onClick={(e) => {
+              e.stopPropagation(); // 카드 클릭으로 전파 방지
+              onClickMarket?.();
+            }}
             className="text-sm text-green-600 hover:underline"
           >
             {marketName}

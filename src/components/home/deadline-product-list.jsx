@@ -35,15 +35,18 @@ export default function DeadlineProductsList() {
             key={item.id}
             name={item.name}
             weight={item.weight}
-            originalPrice={item.originalPrice}
-            discountedPrice={item.discountedPrice}
+            originalPrice={item.originalPrice ?? 0}
+            discountedPrice={item.discountedPrice ?? item.price ?? 0}
             rating={item.rating}
-            reviewCount={item.reviewCount}
+            reviewCount={item.reviewCount ?? item.reviews ?? 0}
             liked={!!item.liked}
             imageUrl={item.imageUrl}
             marketName={item.marketName}
-            onClickMarket={() =>
-              navigate(`/marketDetailPage/${item.marketId ?? item.id}`)
+            onClickMarket={() => navigate(`/marketDetailPage/${item.shopId}`)}
+            onClickCard={() =>
+              navigate(
+                `/marketDetailPage/${item.shopId}/product/${item.productId}`
+              )
             }
             onToggleLike={() => toggleLike(item.id)}
           />
