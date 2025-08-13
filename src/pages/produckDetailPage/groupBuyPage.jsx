@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import GroupBuyHeader from "../../components/groupBuy/group-buy-header";
 import SHOPS from "../../components/db/shops-db";
 import GroupBuyProductCard from "../../components/groupBuy/group-buy-product-card";
-import PaymentButton from "../../components/groupBuy/payment-button";
+import OrderPanel from "../../components/groupBuy/order-panel";
 
 export default function GroupBuyPage() {
   const { shopId: shopIdParam, productId: productIdParam } = useParams();
@@ -30,7 +30,7 @@ export default function GroupBuyPage() {
     <>
       <GroupBuyHeader />
       <GroupBuyProductCard shop={shop} product={product} />
-      <PaymentButton />
+      <OrderPanel shopId={shopId} productId={productId} />
     </>
   );
 }
