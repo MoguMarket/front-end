@@ -2,7 +2,8 @@
 export const IN_PROGRESS_ORDERS = [
     {
         id: "101",
-        marketName: "진골마켓",
+        shopId: 101, // 신평 과일가게
+        marketName: "신평 과일가게",
         productName: "국내산 흙당근",
         weightLabel: "1.5kg",
         imageUrl:
@@ -18,7 +19,8 @@ export const IN_PROGRESS_ORDERS = [
     },
     {
         id: "102",
-        marketName: "푸른농원",
+        shopId: 102, // 새마을 채소가게
+        marketName: "새마을 채소가게",
         productName: "국내산 감자",
         weightLabel: "2kg",
         imageUrl:
@@ -34,7 +36,8 @@ export const IN_PROGRESS_ORDERS = [
     },
     {
         id: "103",
-        marketName: "진골마켓",
+        shopId: 101,
+        marketName: "신평 과일가게",
         productName: "유기농 대파",
         weightLabel: "1단",
         imageUrl:
@@ -50,7 +53,8 @@ export const IN_PROGRESS_ORDERS = [
     },
     {
         id: "104",
-        marketName: "신선제일",
+        shopId: 103,
+        marketName: "공단 청과점",
         productName: "방울토마토",
         weightLabel: "1kg",
         imageUrl:
@@ -66,7 +70,8 @@ export const IN_PROGRESS_ORDERS = [
     },
     {
         id: "105",
-        marketName: "진골마켓",
+        shopId: 101,
+        marketName: "신평 과일가게",
         productName: "양파",
         weightLabel: "3kg",
         imageUrl:
@@ -82,7 +87,8 @@ export const IN_PROGRESS_ORDERS = [
     },
     {
         id: "106",
-        marketName: "푸른농원",
+        shopId: 102,
+        marketName: "새마을 채소가게",
         productName: "브로콜리",
         weightLabel: "2송이",
         imageUrl:
@@ -98,7 +104,8 @@ export const IN_PROGRESS_ORDERS = [
     },
     {
         id: "107",
-        marketName: "신선제일",
+        shopId: 103,
+        marketName: "공단 청과점",
         productName: "영주 사과",
         weightLabel: "1.5kg",
         imageUrl:
@@ -114,7 +121,8 @@ export const IN_PROGRESS_ORDERS = [
     },
     {
         id: "108",
-        marketName: "신선제일",
+        shopId: 103,
+        marketName: "공단 청과점",
         productName: "배추",
         weightLabel: "1포기",
         imageUrl:
@@ -130,7 +138,8 @@ export const IN_PROGRESS_ORDERS = [
     },
     {
         id: "109",
-        marketName: "진골마켓",
+        shopId: 101,
+        marketName: "신평 과일가게",
         productName: "파프리카 혼합",
         weightLabel: "1kg",
         imageUrl:
@@ -146,7 +155,8 @@ export const IN_PROGRESS_ORDERS = [
     },
     {
         id: "110",
-        marketName: "푸른농원",
+        shopId: 102,
+        marketName: "새마을 채소가게",
         productName: "오이",
         weightLabel: "5개",
         imageUrl:
@@ -162,7 +172,8 @@ export const IN_PROGRESS_ORDERS = [
     },
     {
         id: "111",
-        marketName: "푸른농원",
+        shopId: 102,
+        marketName: "새마을 채소가게",
         productName: "달걀",
         weightLabel: "30구",
         imageUrl:
@@ -178,7 +189,8 @@ export const IN_PROGRESS_ORDERS = [
     },
     {
         id: "112",
-        marketName: "진골마켓",
+        shopId: 101,
+        marketName: "신평 과일가게",
         productName: "찹쌀",
         weightLabel: "2kg",
         imageUrl:
