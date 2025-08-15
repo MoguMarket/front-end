@@ -6,7 +6,7 @@ import { ArrowRightIcon } from "@heroicons/react/20/solid";
 
 const KRW = (n) => `${Math.round(n).toLocaleString()}원`;
 
-export default function OrderCard({ item, onClick, onCancel }) {
+export default function OrderCard({ item, onClick, onCancel, onMarketClick }) {
     const {
         id,
         marketName,
@@ -19,6 +19,7 @@ export default function OrderCard({ item, onClick, onCancel }) {
         cancellable,
         dDayLabel,
         progress,
+        status,
     } = item;
 
     const kgLabel =
@@ -26,13 +27,15 @@ export default function OrderCard({ item, onClick, onCancel }) {
             ? `${progress.currentKg.toFixed(1)}kg`
             : null;
 
+    const isPickup = status === "READY_FOR_PICKUP";
+
     return (
         <div
             className="rounded-xl border bg-white overflow-hidden"
             style={{ borderColor: "#E6E6E6" }}
         >
             <div className="grid grid-cols-[130px_1fr] min-h-[120px]">
-                {/* 왼쪽: 정사각 + 중앙 오버레이(D-n / n kg) */}
+                {/* 왼쪽: 이미지 + 오버레이 */}
                 <button
                     type="button"
                     className="relative w-[130px] h-[130px] bg-[#EAEAEA] overflow-hidden rounded-l-xl"
@@ -44,9 +47,7 @@ export default function OrderCard({ item, onClick, onCancel }) {
                         alt=""
                         className="w-full h-full object-cover"
                     />
-
-                    <div className="absolute inset-0 bg-[#00000040]"></div>
-
+                    <div className="absolute inset-0 bg-[#00000040]" />
                     <div className="absolute inset-0 flex flex-col items-center justify-center text-white leading-tight pointer-events-none">
                         {dDayLabel && (
                             <span className="text-[16px] font-extrabold drop-shadow-md">
@@ -65,13 +66,17 @@ export default function OrderCard({ item, onClick, onCancel }) {
                 <div className="p-3 pl-3 flex flex-col justify-start">
                     {/* 상단: 마켓 / 취소 */}
                     <div className="flex items-start justify-between">
-                        <div
-                            className="text-[12px] font-bold"
+                        <button
+                            type="button"
+                            onClick={() => onMarketClick?.(item)}
+                            className="text-[12px] font-bold underline-offset-2 hover:underline"
                             style={{ color: "#4CC554" }}
+                            aria-label={`${marketName} 상세로 이동`}
                         >
                             {marketName}
-                        </div>
-                        {cancellable && (
+                        </button>
+
+                        {!isPickup && cancellable && (
                             <button
                                 type="button"
                                 onClick={() => onCancel?.(id)}
@@ -116,19 +121,21 @@ export default function OrderCard({ item, onClick, onCancel }) {
                         )}
                     </div>
 
-                    {/* 결제 예정 금액 */}
+                    {/* 결제 상태 문구 */}
                     <div className="mt-1 flex items-center gap-2 text-[11px] text-[#999999]">
-                        <span>결제 예정금액</span>
+                        <span>{isPickup ? "결제 완료" : "결제 예정금액"}</span>
                     </div>
 
-                    {/*  체크 아이콘 + 다음 단계까지 */}
-                    <div className="mt-2 -mb-1 flex items-center gap-1 text-[12px] text-[#41484E]">
-                        <Check
-                            className="w-4 h-4"
-                            style={{ color: "#4CC554" }}
-                        />
-                        <span>다음 단계까지 {stepLabel}</span>
-                    </div>
+                    {/* 다음 단계까지: 픽업 대기에서는 숨김 */}
+                    {!isPickup && (
+                        <div className="mt-2 -mb-1 flex items-center gap-1 text-[12px] text-[#41484E]">
+                            <Check
+                                className="w-4 h-4"
+                                style={{ color: "#4CC554" }}
+                            />
+                            <span>다음 단계까지 {stepLabel}</span>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
