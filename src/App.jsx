@@ -20,12 +20,14 @@ import ProductDetailPage from "./pages/produckDetailPage/[id]";
 import GroupBuyPage from "./pages/produckDetailPage/groupBuyPage";
 import MainLogin from "./pages/loginPage/main-login";
 import SellerLogin from "./pages/loginPage/seller-login.jsx";
+import FirstPageLogin from "./pages/loginPage/first-page-login";
 
 function AppContent() {
     const { pathname } = useLocation();
     const isMapPage = pathname === "/marketMapList";
 
-    const matchMarketDetail = useMatch("/marketDetailPage/:id");
+    // ✅ 실제 라우트와 맞추기 (:shopId)
+    const matchMarketDetail = useMatch("/marketDetailPage/:shopId");
     const isDetailPage = Boolean(matchMarketDetail);
 
     const matchProductDetail = useMatch(
@@ -38,9 +40,13 @@ function AppContent() {
     );
     const isGroupBuyPage = Boolean(matchGroupBuyPage);
 
-    const isAuthPage = ["/login", "/main-login", "/seller-login"].includes(
-        pathname
-    );
+    const AUTH_PATHS = new Set([
+        "/login",
+        "/main-login",
+        "/seller-login",
+        "/firstpage",
+    ]);
+    const isAuthPage = AUTH_PATHS.has(pathname);
 
     return (
         <div className="relative w-full max-w-[390px] mx-auto bg-white">
@@ -78,13 +84,11 @@ function AppContent() {
                         path="/marketDetailPage/:shopId/product/:productId/groupBuy"
                         element={<GroupBuyPage />}
                     />
-
+                    <Route path="/firstpage" element={<FirstPageLogin />} />
                     <Route path="/login" element={<MainLogin />} />
-                    <Route path="/main-login" element={<MainLogin />} />
                     <Route path="/seller-login" element={<SellerLogin />} />
                 </Routes>
             </div>
-
             {!isAuthPage && !isProductDetailPage && !isGroupBuyPage && (
                 <BottomNavBar />
             )}
