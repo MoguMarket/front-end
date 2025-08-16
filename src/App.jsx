@@ -38,14 +38,12 @@ function AppContent() {
     );
     const isGroupBuyPage = Boolean(matchGroupBuyPage);
 
-    // ✅ 로그인 계열 페이지 식별
     const isAuthPage = ["/login", "/main-login", "/seller-login"].includes(
         pathname
     );
 
     return (
         <div className="relative w-full max-w-[390px] mx-auto bg-white">
-            {/* ✅ 로그인 페이지에선 헤더 숨김 */}
             {!isAuthPage &&
                 !isMapPage &&
                 !isDetailPage &&
@@ -81,16 +79,12 @@ function AppContent() {
                         element={<GroupBuyPage />}
                     />
 
-                    {/* ✅ /login도 메인 로그인으로 진입 */}
                     <Route path="/login" element={<MainLogin />} />
-                    {/* 또는 리다이렉트: <Route path="/login" element={<Navigate to="/main-login" replace />} /> */}
-
                     <Route path="/main-login" element={<MainLogin />} />
                     <Route path="/seller-login" element={<SellerLogin />} />
                 </Routes>
             </div>
 
-            {/* ✅ 로그인 페이지에선 바텀바 숨김 */}
             {!isAuthPage && !isProductDetailPage && !isGroupBuyPage && (
                 <BottomNavBar />
             )}
