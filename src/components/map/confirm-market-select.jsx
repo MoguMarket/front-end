@@ -41,37 +41,14 @@ export default function ConfirmMarketSelect({
   };
 
   const handleConfirm = () => {
-    console.log("[ConfirmModal] confirm click ->", {
-      shopId,
-      type: typeof shopId,
-    });
-
     // 1) 전역 atom 저장
     setCurrentMarketId(shopId);
-
-    // 2) 저장 직후 localStorage 확인(동기 확인)
-    try {
-      const raw = localStorage.getItem("currentMarketId");
-      console.log("[ConfirmModal] after set (raw) =", raw);
-      console.log("[ConfirmModal] after set (parsed) =", JSON.parse(raw));
-    } catch (e) {
-      console.warn("[ConfirmModal] JSON.parse error:", e);
-    }
 
     // 3) URL에도 shopId를 싣고 홈으로 이동 (ShopIdSync가 되돌리는 것 방지)
     navigate(`/?shopId=${encodeURIComponent(shopId)}`, {
       replace: true,
       state: { from: location.pathname },
     });
-
-    // 4) 이동 직전/직후 추적용 (선택)
-    setTimeout(() => {
-      const rawLater = localStorage.getItem("currentMarketId");
-      console.log("[ConfirmModal] +50ms after navigate (raw) =", rawLater);
-      try {
-        console.log("[ConfirmModal] +50ms (parsed) =", JSON.parse(rawLater));
-      } catch {}
-    }, 50);
   };
 
   return (
