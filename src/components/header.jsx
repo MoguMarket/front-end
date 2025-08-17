@@ -19,7 +19,9 @@ export default function Header() {
   return (
     <header className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[390px] bg-[#4CC554] z-50 mb-[-30px]">
       <div className="h-14 flex items-center justify-between px-4 text-white">
-        <img src={logo} alt="Logo" className="h-6" />
+        <Link to={{ pathname: "/", search: location.search }}>
+          <img src={logo} alt="Logo" className="h-6" />
+        </Link>
 
         <Link
           to="/marketMapList"
