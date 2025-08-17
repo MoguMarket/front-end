@@ -18,9 +18,9 @@ export default function FirstPageLogin() {
 
   return (
     <div className="w-full bg-[#F3F3F3] flex items-center justify-center">
-      <div className="h-screen rounded-[32px] bg-white shadow-xl overflow-hidden">
+      <div className="h-screen  bg-white overflow-hidden">
         {/* 상단 배너 (main-login과 동일) */}
-        <div className="relative w-[390px] h-[70px] rounded-t-[32px] overflow-hidden">
+        <div className="relative w-[390px] h-[70px] overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-b from-[#4CC554] to-white" />
           <div className="relative flex justify-center items-center h-full z-10">
             <img

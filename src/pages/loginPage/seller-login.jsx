@@ -33,9 +33,9 @@ export default function SellerLogin() {
 
   return (
     <div className="w-full bg-[#F3F3F3] flex items-center justify-center">
-      <div className="h-screen rounded-[32px] bg-white shadow-xl overflow-hidden">
+      <div className="h-screen  bg-white overflow-hidden">
         {/* 배너(오렌지 → 흰색) */}
-        <div className="relative w-[390px] h-[70px] rounded-t-[32px] overflow-hidden">
+        <div className="relative w-[390px] h-[70px] overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-b from-[#F5B236] to-white" />
           <div className="relative flex justify-center items-center h-full z-10">
             <img

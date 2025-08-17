@@ -16,12 +16,12 @@ export default function MainLogin() {
   };
 
   return (
-    <div className="w-full bg-[#F3F3F3] flex items-center justify-center">
+    <div className=" w-full bg-[#F3F3F3] flex items-center justify-center">
       {/* 고정 디바이스 프레임 */}
-      <div className="h-screen rounded-[32px] bg-white shadow-xl overflow-hidden">
+      <div className="h-screen bg-white overflow-hidden">
         {/* 1. logobanner */}
         {/* logobanner */}
-        <div className="relative w-[390px] h-[70px] rounded-t-[32px] overflow-hidden">
+        <div className="relative w-[390px] h-[70px] overflow-hidden">
           {/* 배경 */}
           <div className="absolute inset-0 bg-gradient-to-b from-[#4CC554] to-white" />
 
