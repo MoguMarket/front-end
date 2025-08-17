@@ -1,10 +1,17 @@
-// src/components/home/category-filter-simple.jsx
 import { useState } from "react";
 import { Plus, Minus } from "lucide-react";
 
 const MAX_FAV = 8;
 
-export default function CategoryFilterSimple() {
+/**
+ * props:
+ * - selectedCategory: string|null
+ * - onToggleCategory: (name: string) => void
+ */
+export default function CategoryFilterSimple({
+  selectedCategory = null,
+  onToggleCategory,
+}) {
   // 초기 더미 데이터
   const [favorites, setFavorites] = useState([
     "농산",
@@ -33,8 +40,17 @@ export default function CategoryFilterSimple() {
   };
   const removeFav = (c) => {
     setFavorites((prev) => prev.filter((x) => x !== c));
-    // 중복 추가 방지
     setOthers((prev) => (prev.includes(c) ? prev : [...prev, c]));
+  };
+
+  // 클릭 시 동작: 편집 모드면 편집, 아니면 선택 토글
+  const handleClickFav = (c) => {
+    if (edit) return removeFav(c);
+    onToggleCategory?.(c);
+  };
+  const handleClickOther = (c) => {
+    if (edit) return addFav(c);
+    onToggleCategory?.(c);
   };
 
   return (
@@ -57,14 +73,15 @@ export default function CategoryFilterSimple() {
           <button
             key={c}
             type="button"
-            onClick={() => edit && removeFav(c)}
+            onClick={() => handleClickFav(c)}
             className={`px-4 py-2 rounded-full border shrink-0 text-sm
               ${
                 edit
                   ? "bg-green-50 text-green-700 border-green-500"
                   : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
-              }
-            `}
+              } ${
+              !edit && selectedCategory === c ? "ring-2 ring-[#4CC554]/60" : ""
+            }`}
           >
             {c}
           </button>
@@ -78,20 +95,24 @@ export default function CategoryFilterSimple() {
         }`}
       >
         <div className="overflow-hidden">
-          <div className="">
+          <div>
             <div className="flex flex-wrap gap-2">
               {others.map((c) => (
                 <button
                   key={c}
                   type="button"
-                  onClick={() => edit && addFav(c)}
+                  onClick={() => handleClickOther(c)}
                   className={`px-4 py-2 rounded-full border
                     ${
                       edit
                         ? "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                         : "bg-white text-gray-700 border-gray-200"
-                    }`}
-                  disabled={!edit || favorites.length >= MAX_FAV}
+                    } ${
+                    !edit && selectedCategory === c
+                      ? "ring-2 ring-[#4CC554]/60"
+                      : ""
+                  }`}
+                  disabled={edit && favorites.length >= MAX_FAV}
                 >
                   {c}
                 </button>
@@ -105,12 +126,14 @@ export default function CategoryFilterSimple() {
                 type="button"
                 onClick={() => setEdit((v) => !v)}
                 aria-pressed={edit}
-                className={`w-11 h-6 rounded-full relative transition
-                  ${edit ? "bg-green-500" : "bg-gray-300"}`}
+                className={`w-11 h-6 rounded-full relative transition ${
+                  edit ? "bg-green-500" : "bg-gray-300"
+                }`}
               >
                 <span
-                  className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition
-                    ${edit ? "translate-x-5" : ""}`}
+                  className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition ${
+                    edit ? "translate-x-5" : ""
+                  }`}
                 />
               </button>
               <span className="text-xs text-gray-400">
