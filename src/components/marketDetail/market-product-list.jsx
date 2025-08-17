@@ -1,4 +1,3 @@
-// src/components/product-list.jsx
 import { useNavigate } from "react-router-dom";
 import MarketProductCard from "./market-product-card";
 
@@ -26,6 +25,8 @@ export default function ProductList({ products, shopId }) {
           liked={item.liked}
           imageUrl={item.imageUrl}
           marketName={null}
+          progressCurrent={item.progressCurrent}
+          progressMax={item.progressMax}
           onClickMarket={handleMarketClick}
           onToggleLike={() => toggleLike(item.id)}
           onClickCard={() => goProductDetail(item.id)}

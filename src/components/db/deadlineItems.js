@@ -13,6 +13,8 @@ const deadlineItems = [
     reviewCount: 9,
     liked: true,
     imageUrl: "/images/carrot.jpg",
+    progressCurrent: 10,
+    progressMax: 12, // ~83% (빨강)
   },
   {
     id: 2,
@@ -28,6 +30,8 @@ const deadlineItems = [
     reviewCount: 7,
     liked: true,
     imageUrl: "/images/carrot.jpg",
+    progressCurrent: 8,
+    progressMax: 40, // 20%
   },
   {
     id: 3,
@@ -43,6 +47,8 @@ const deadlineItems = [
     reviewCount: 15,
     liked: false,
     imageUrl: "/images/carrot.jpg",
+    progressCurrent: 23,
+    progressMax: 25, // 92% (빨강)
   },
   {
     id: 4,
@@ -58,6 +64,8 @@ const deadlineItems = [
     reviewCount: 13,
     liked: true,
     imageUrl: "/images/carrot.jpg",
+    progressCurrent: 12,
+    progressMax: 40, // 30%
   },
   {
     id: 5,
@@ -73,6 +81,8 @@ const deadlineItems = [
     reviewCount: 10,
     liked: true,
     imageUrl: "/images/carrot.jpg",
+    progressCurrent: 18,
+    progressMax: 24, // 75%
   },
   {
     id: 6,
@@ -88,6 +98,8 @@ const deadlineItems = [
     reviewCount: 16,
     liked: true,
     imageUrl: "/images/carrot.jpg",
+    progressCurrent: 31,
+    progressMax: 34, // ~91% (빨강)
   },
 ];
 

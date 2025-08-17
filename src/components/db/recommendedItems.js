@@ -13,6 +13,8 @@ const deadlineItems = [
     reviewCount: 9,
     liked: false,
     imageUrl: "/images/carrot.jpg",
+    progressCurrent: 12,
+    progressMax: 15, // 80%
   },
   {
     id: 2,
@@ -28,6 +30,8 @@ const deadlineItems = [
     reviewCount: 14,
     liked: false,
     imageUrl: "/images/carrot.jpg",
+    progressCurrent: 5,
+    progressMax: 20, // 25%
   },
   {
     id: 3,
@@ -43,6 +47,8 @@ const deadlineItems = [
     reviewCount: 13,
     liked: true,
     imageUrl: "/images/carrot.jpg",
+    progressCurrent: 17,
+    progressMax: 20, // 85%
   },
   {
     id: 4,
@@ -58,6 +64,8 @@ const deadlineItems = [
     reviewCount: 19,
     liked: false,
     imageUrl: "/images/carrot.jpg",
+    progressCurrent: 9,
+    progressMax: 30, // 30%
   },
   {
     id: 5,
@@ -73,6 +81,8 @@ const deadlineItems = [
     reviewCount: 9,
     liked: true,
     imageUrl: "/images/carrot.jpg",
+    progressCurrent: 14,
+    progressMax: 18, // ~78%
   },
   {
     id: 6,
@@ -88,6 +98,8 @@ const deadlineItems = [
     reviewCount: 13,
     liked: true,
     imageUrl: "/images/carrot.jpg",
+    progressCurrent: 28,
+    progressMax: 30, // ~93%
   },
 ];
 

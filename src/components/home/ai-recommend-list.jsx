@@ -53,13 +53,15 @@ export default function AiRecommendList() {
                 "https://www.saenong.com/assets/upload/detailimage1/20240709_7874794413310.jpg"
               }
               marketName={item.marketName}
+              progressCurrent={item.progressCurrent}
+              progressMax={item.progressMax}
               onClickMarket={() => navigate(`/marketDetailPage/${item.shopId}`)}
               onToggleLike={() => toggleLike(item.id)}
               onClickCard={() =>
                 navigate(
                   `/marketDetailPage/${item.shopId}/product/${item.productId}`
                 )
-              } // ✅ 카드 클릭 시 제품 디테일
+              }
             />
           );
         })}

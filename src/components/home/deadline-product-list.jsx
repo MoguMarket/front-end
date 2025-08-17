@@ -1,4 +1,3 @@
-// src/components/home/deadline-products-list.jsx
 import { useState } from "react";
 import Slider from "react-slick";
 import deadlineItems from "../db/deadlineItems";
@@ -42,6 +41,8 @@ export default function DeadlineProductsList() {
             liked={!!item.liked}
             imageUrl={item.imageUrl}
             marketName={item.marketName}
+            progressCurrent={item.progressCurrent}
+            progressMax={item.progressMax}
             onClickMarket={() => navigate(`/marketDetailPage/${item.shopId}`)}
             onClickCard={() =>
               navigate(

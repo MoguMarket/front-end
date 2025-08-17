@@ -13,6 +13,9 @@ export default function ProductCard({
   onClickMarket,
   onToggleLike,
   onClickCard, // ⬅️ 추가
+  // ✅ 진행도 추가 props
+  progressCurrent,
+  progressMax,
 }) {
   const discountRate = Math.round(
     ((originalPrice - discountedPrice) / originalPrice) * 100
@@ -24,6 +27,20 @@ export default function ProductCard({
       onClickCard();
     }
   };
+
+  // ✅ 진행도 계산 (없으면 표시 안 함)
+  const percent =
+    typeof progressCurrent === "number" &&
+    typeof progressMax === "number" &&
+    progressMax > 0
+      ? Math.max(
+          0,
+          Math.min(100, Math.round((progressCurrent / progressMax) * 100))
+        )
+      : null;
+
+  const barColorClass =
+    percent != null && percent >= 80 ? "bg-[#D85C54]" : "bg-[#4CC554]";
 
   return (
     // 카드 전체를 클릭 타겟으로
@@ -58,6 +75,24 @@ export default function ProductCard({
           />
         </button>
       </div>
+
+      {/* ✅ 진행 바: 이미지 바로 아래 */}
+      {percent != null && (
+        <div className="px-3 pt-2">
+          <div
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={percent}
+            className="w-full h-2 rounded-full bg-neutral-200"
+          >
+            <div
+              className={`h-full rounded-full ${barColorClass} transition-[width] duration-300`}
+              style={{ width: `${percent}%` }}
+            />
+          </div>
+        </div>
+      )}
 
       {/* 내용 영역만 패딩 */}
       <div className="p-3">
