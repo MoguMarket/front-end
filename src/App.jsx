@@ -48,7 +48,7 @@ function AppContent() {
     "/login",
     "/main-login",
     "/seller-login",
-    "/firstpage",
+    "/firstPage",
   ]);
   const isAuthPage = AUTH_PATHS.has(pathname);
 

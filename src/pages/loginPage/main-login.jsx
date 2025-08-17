@@ -16,9 +16,9 @@ export default function MainLogin() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#F3F3F3] flex items-center justify-center">
+    <div className="w-full bg-[#F3F3F3] flex items-center justify-center">
       {/* 고정 디바이스 프레임 */}
-      <div className="w-[390px] h-[844px] rounded-[32px] bg-white shadow-xl overflow-hidden">
+      <div className="h-screen rounded-[32px] bg-white shadow-xl overflow-hidden">
         {/* 1. logobanner */}
         {/* logobanner */}
         <div className="relative w-[390px] h-[70px] rounded-t-[32px] overflow-hidden">
