@@ -22,6 +22,7 @@ import MainLogin from "./pages/loginPage/main-login";
 import SellerLogin from "./pages/loginPage/seller-login.jsx";
 import FirstPageLogin from "./pages/loginPage/first-page-login";
 import ShopIdSync from "./components/router/ShopIdSync.js";
+import SearchPage from "./pages/searchPage.jsx";
 
 function AppContent() {
   const { pathname } = useLocation();
@@ -41,6 +42,8 @@ function AppContent() {
   );
   const isGroupBuyPage = Boolean(matchGroupBuyPage);
 
+  const isSearchPage = pathname === "/search";
+
   const AUTH_PATHS = new Set([
     "/login",
     "/main-login",
@@ -52,9 +55,11 @@ function AppContent() {
   return (
     <div className="relative w-full max-w-[390px] mx-auto bg-white">
       <ShopIdSync />
-      {!isAuthPage && !isMapPage && !isDetailPage && !isProductDetailPage && (
-        <Header />
-      )}
+      {!isAuthPage &&
+        !isMapPage &&
+        !isDetailPage &&
+        !isProductDetailPage &&
+        !isSearchPage && <Header />}
 
       <div
         className={`min-h-screen ${
@@ -65,6 +70,7 @@ function AppContent() {
       >
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/search" element={<SearchPage />} />"
           <Route path="/gift" element={<GiftPage />} />
           <Route path="/shopping" element={<ShoppingPage />} />
           <Route path="/order" element={<OrderPage />} />

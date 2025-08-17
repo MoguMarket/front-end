@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Search, X } from "lucide-react";
 
 /**
@@ -5,18 +6,34 @@ import { Search, X } from "lucide-react";
  * - placeholder?: string
  * - categoryLabel?: string|null
  * - onClearCategory?: () => void
+ * - defaultValue?: string        // 초기 검색어 (URL q 등)
+ * - onSubmit?: (term: string) => void   // 엔터/submit 시 호출
  */
 export default function SearchBar({
   placeholder = "상품을 검색하세요",
   categoryLabel = null,
   onClearCategory,
+  defaultValue = "",
+  onSubmit,
 }) {
+  const [value, setValue] = useState(defaultValue);
+
+  // URL에서 바뀐 q 반영
+  useEffect(() => {
+    setValue(defaultValue);
+  }, [defaultValue]);
+
   const hasCategory = !!categoryLabel;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit?.(value.trim());
+  };
 
   return (
     <div className="relative left-1/2 -translate-x-1/2 w-screen px-4 mt-[-5px]">
       <form
-        onSubmit={(e) => e.preventDefault()}
+        onSubmit={handleSubmit}
         className="relative mt-2 md:mt-3 w-full mx-auto
            max-w-[300px] md:max-w-[400px] lg:max-w-[370px]"
       >
@@ -25,7 +42,6 @@ export default function SearchBar({
           size={18}
         />
 
-        {/* 선택된 카테고리 배지 (입력창 안 왼쪽) */}
         {hasCategory && (
           <span
             className="absolute left-9 top-1/2 -translate-y-1/2 h-7 px-3 inline-flex items-center rounded-full border border-[#4CC554] text-[#4CC554] text-sm bg-white"
@@ -35,16 +51,16 @@ export default function SearchBar({
           </span>
         )}
 
-        {/* 입력창 */}
         <input
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
           placeholder={placeholder}
           aria-label="상품 검색"
           className={`w-full h-10 md:h-11 ${
-            hasCategory ? "pl-28" : "pl-10"
-          } pr-9 rounded-xl border border-[#4CC554] bg-white shadow-sm text-sm placeholder:text-neutral-400 focus:outline-none`}
+            hasCategory ? "pl-32" : "pl-10"
+          } pr-9 rounded-xl border border-[#4CC554] bg-white shadow-sm text-sm placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#4CC554] focus:border-[#4CC554]`}
         />
 
-        {/* 카테고리 지우기 버튼 (오른쪽) */}
         {hasCategory && (
           <button
             type="button"
