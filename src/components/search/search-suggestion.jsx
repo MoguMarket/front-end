@@ -1,14 +1,23 @@
-// src/components/search/search-suggestions.jsx
+// src/components/search/search-suggestion.jsx
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 const RECENT_KEY = "mm_recent_searches";
 const RECENT_LIMIT = 10;
 
+// API 응답: { success: "true" | true, data: ["삼겹살", ...] }
+function extractKeywordsFromResponse(json) {
+    const arr = json?.data;
+    return Array.isArray(arr) && arr.every((v) => typeof v === "string")
+        ? arr
+        : [];
+}
+
 export default function SearchSuggestions({ popular = [] }) {
     const [sp, setSp] = useSearchParams();
     const q = sp.get("q") || "";
 
+    // 최근 검색어
     const [recent, setRecent] = useState(() => {
         try {
             const raw = localStorage.getItem(RECENT_KEY);
@@ -17,6 +26,9 @@ export default function SearchSuggestions({ popular = [] }) {
             return [];
         }
     });
+
+    // 인기 검색어(API)
+    const [popularLocal, setPopularLocal] = useState(null);
 
     // q가 변할 때 최근 검색어 저장 (최신순, 중복 제거, 최대 10개)
     useEffect(() => {
@@ -34,8 +46,37 @@ export default function SearchSuggestions({ popular = [] }) {
         });
     }, [q]);
 
+    // 인기 검색어 호출
+    useEffect(() => {
+        let alive = true;
+        (async () => {
+            try {
+                const res = await fetch(
+                    `${import.meta.env.VITE_API_BASE}/api/search/trending`,
+                    {
+                        headers: { Accept: "application/json" },
+                    }
+                );
+                const json = await res.json();
+                if (!alive) return;
+                const kws = extractKeywordsFromResponse(json);
+                if (kws.length) setPopularLocal(kws);
+            } catch (e) {
+                console.warn("trending fetch failed", e);
+            }
+        })();
+        return () => {
+            alive = false;
+        };
+    }, []);
+
+    // 렌더링용 데이터
     const hasRecent = useMemo(() => recent.length > 0, [recent]);
-    const hasPopular = useMemo(() => (popular?.length || 0) > 0, [popular]);
+    const popularToShow = popularLocal ?? popular;
+    const hasPopular = useMemo(
+        () => (popularToShow?.length || 0) > 0,
+        [popularToShow]
+    );
 
     const selectTerm = (term) => {
         const next = new URLSearchParams(sp);
@@ -102,7 +143,7 @@ export default function SearchSuggestions({ popular = [] }) {
 
                 {hasPopular ? (
                     <div className="mt-2 flex flex-wrap gap-2">
-                        {popular.map((term) => (
+                        {popularToShow.map((term) => (
                             <button
                                 key={term}
                                 type="button"
