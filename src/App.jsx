@@ -72,7 +72,7 @@ function AppContent() {
             >
                 <Routes>
                     <Route path="/" element={<HomePage />} />
-                    <Route path="/search" element={<SearchPage />} />"
+                    <Route path="/search" element={<SearchPage />} />
                     <Route path="/gift" element={<GiftPage />} />
                     <Route path="/shopping" element={<ShoppingPage />} />
                     <Route path="/order" element={<OrderPage />} />
