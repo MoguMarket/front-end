@@ -27,6 +27,8 @@ import SearchPage from "./pages/searchPage.jsx";
 
 import PageGuard from "./components/router/PageGaurd.jsx";
 
+import Register from "./pages/loginPage/register.jsx";
+
 function AppContent() {
   const { pathname } = useLocation();
   const isMapPage = pathname === "/marketMapList";
@@ -46,11 +48,13 @@ function AppContent() {
 
   const isSearchPage = pathname === "/search";
 
+  // ✅ 인증 관련 경로에 /register 추가
   const AUTH_PATHS = new Set([
     "/login",
     "/main-login",
     "/seller-login",
     "/firstpage",
+    "/register",
   ]);
   const isAuthPage = AUTH_PATHS.has(pathname);
 
@@ -76,6 +80,8 @@ function AppContent() {
           <Route path="/firstpage" element={<FirstPageLogin />} />
           <Route path="/login" element={<MainLogin />} />
           <Route path="/seller-login" element={<SellerLogin />} />
+          {/* ✅ 회원가입 공개 경로 */}
+          <Route path="/register" element={<Register />} />
 
           {/* 보호 경로 */}
           <Route
