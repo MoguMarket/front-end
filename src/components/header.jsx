@@ -11,9 +11,10 @@ import {
 } from "../lib/webpush";
 
 export default function Header() {
-  const location = useLocation();
+  const { pathname } = useLocation();
   const [sp] = useSearchParams();
   const shopId = sp.get("shopId");
+  const fromGift = sp.get("from") === "gift"; // ✅ 쿼리 파라미터로 gift 여부 체크
 
   // shopId로 현재 시장 찾기
   const sid = shopId ? Number(shopId) : null;
@@ -31,10 +32,8 @@ export default function Header() {
   const enabled = Boolean(fcmToken);
 
   useEffect(() => {
-    // 포그라운드 수신 예시(원하면 토스트 UI 연결)
     listenForeground((p) => {
       // console.log("포그라운드 알림:", p);
-      // TODO: toast(`${p.notification?.title} - ${p.notification?.body}`);
     });
   }, []);
 
@@ -56,13 +55,19 @@ export default function Header() {
     }
   };
 
+  // ✅ GiftPage 또는 from=gift 파라미터일 때 헤더 색상 변경
+  const headerColor = pathname === "/gift" || fromGift ? "#F5B236" : "#4CC554";
+
   return (
-    <header className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[390px] bg-[#4CC554] z-50">
+    <header
+      className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[390px] z-50"
+      style={{ backgroundColor: headerColor }}
+    >
       <div className="h-14 flex items-center justify-between px-4 text-white">
         {/* 왼쪽: 시장 선택 */}
         <Link
           to="/marketMapList"
-          state={{ from: location.pathname }}
+          state={{ from: pathname }}
           className="flex items-center space-x-1"
         >
           <MapPin size={16} color="white" />
@@ -84,11 +89,9 @@ export default function Header() {
           title={enabled ? "웹 푸시 비활성화" : "웹 푸시 활성화"}
         >
           <Bell size={20} color="white" />
-          {/* 활성 상태 배지 */}
           {enabled && (
             <span className="absolute top-0.5 right-0.5 inline-block w-2 h-2 bg-green-400 rounded-full" />
           )}
-          {/* 로딩 인디케이터(작게) */}
           {loading && (
             <span className="absolute -bottom-1 right-0 inline-block w-2 h-2 rounded-full animate-pulse bg-white/80" />
           )}

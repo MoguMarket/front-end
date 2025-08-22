@@ -1,3 +1,10 @@
+import React from "react";
+import ShoppingCartList from "../components/shoppingCart/shopping-cart-list";
+
 export default function ShoppingCartPage() {
-  return <div>장바구니 페이지입니다.</div>;
+  return (
+    <div className="mt-3">
+      <ShoppingCartList />
+    </div>
+  );
 }
