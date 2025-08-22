@@ -1,16 +1,23 @@
+// src/components/home/ai-recommend-list.jsx
 import { useState } from "react";
 import Slider from "react-slick";
 import recommendedItems from "../db/recommendedItems";
 import { useUserContext } from "../contexts/user-context";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import ProductCard from "./product-card";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 export default function AiRecommendList() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [sp] = useSearchParams();
+
   const { name } = useUserContext();
   const [items, setItems] = useState(recommendedItems);
+
+  const isGiftPage = location.pathname === "/gift";
+  const currentShopId = sp.get("shopId") || undefined;
 
   const toggleLike = (id) => {
     setItems((prev) =>
@@ -29,6 +36,22 @@ export default function AiRecommendList() {
     slidesToScroll: 2,
   };
 
+  // 상세로 이동할 때 쿼리 구성: shopId 유지 + (GiftPage면) from=gift
+  const buildDetailQuery = (shopId) => {
+    const qs = new URLSearchParams(location.search);
+    if (shopId) qs.set("shopId", shopId);
+    if (isGiftPage) qs.set("from", "gift");
+    return qs.toString();
+  };
+
+  // 마켓으로 이동할 때도 shopId 유지
+  const buildMarketQuery = (shopId) => {
+    const qs = new URLSearchParams(location.search);
+    if (shopId) qs.set("shopId", shopId);
+    // from=gift 는 마켓 리스트엔 필요 없어서 미부착 (원하면 붙이세요)
+    return qs.toString();
+  };
+
   return (
     <div className="py-3 font-[Pretendard] tracking-[-0.025em]">
       <h3 className="text-md font-semibold mb-2">
@@ -37,6 +60,8 @@ export default function AiRecommendList() {
 
       <Slider {...settings} className="ai-slider">
         {items.map((item) => {
+          const shopId = item.shopId || currentShopId;
+
           return (
             <ProductCard
               tCard
@@ -55,13 +80,24 @@ export default function AiRecommendList() {
               marketName={item.marketName}
               progressCurrent={item.progressCurrent}
               progressMax={item.progressMax}
-              onClickMarket={() => navigate(`/marketDetailPage/${item.shopId}`)}
               onToggleLike={() => toggleLike(item.id)}
-              onClickCard={() =>
+              onClickMarket={() => {
+                const qs = buildMarketQuery(shopId);
+                navigate(`/marketDetailPage/${shopId}${qs ? `?${qs}` : ""}`);
+              }}
+              onClickCard={() => {
+                if (!shopId) {
+                  console.warn(
+                    "[AiRecommendList] shopId 없음. URL에 ?shopId=... 또는 item.shopId 제공 필요"
+                  );
+                }
+                const qs = buildDetailQuery(shopId);
                 navigate(
-                  `/marketDetailPage/${item.shopId}/product/${item.productId}`
-                )
-              }
+                  `/marketDetailPage/${shopId}/product/${item.productId}${
+                    qs ? `?${qs}` : ""
+                  }`
+                );
+              }}
             />
           );
         })}

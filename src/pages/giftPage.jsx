@@ -1,3 +1,4 @@
+// src/pages/giftPage.jsx
 import { useState, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import AiRecommendList from "../components/home/ai-recommend-list";
@@ -10,17 +11,13 @@ export default function GiftPage() {
   const [sp] = useSearchParams();
   const navigate = useNavigate();
 
-  // URL에서 shopId 유지
   const shopId = sp.get("shopId") || undefined;
 
-  // 카테고리 토글
   const handleToggleCategory = useCallback((name) => {
     setSelectedCategory((prev) => (prev === name ? null : name));
   }, []);
-
   const clearCategory = useCallback(() => setSelectedCategory(null), []);
 
-  // 검색 제출 -> /search 로 이동 (쿼리 세팅)
   const handleSearchSubmit = useCallback(
     (term) => {
       const params = new URLSearchParams();
@@ -30,6 +27,23 @@ export default function GiftPage() {
       navigate(`/search?${params.toString()}`);
     },
     [navigate, selectedCategory, shopId]
+  );
+
+  // ✅ 상품 카드 클릭 시 상세로 이동 (from=gift 부착)
+  const goProductDetailFromGift = useCallback(
+    (productId) => {
+      if (!shopId) {
+        // 필요한 경우 shopId가 필수면 가드
+        console.warn("shopId 없음. URL에 shopId를 붙여주세요.");
+      }
+      const params = new URLSearchParams();
+      if (shopId) params.set("shopId", shopId);
+      params.set("from", "gift");
+      navigate(
+        `/marketDetailPage/${shopId}/product/${productId}?${params.toString()}`
+      );
+    },
+    [navigate, shopId]
   );
 
   return (
@@ -45,8 +59,11 @@ export default function GiftPage() {
         onToggleCategory={handleToggleCategory}
       />
 
-      <AiRecommendList />
-      <DeadlineProductsList />
+      {/* 리스트 컴포넌트에 클릭 핸들러 prop으로 내려주면 좋음 */}
+      <AiRecommendList onItemClick={(p) => goProductDetailFromGift(p.id)} />
+      <DeadlineProductsList
+        onItemClick={(p) => goProductDetailFromGift(p.id)}
+      />
     </div>
   );
 }

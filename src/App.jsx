@@ -25,6 +25,7 @@ import FirstPageLogin from "./pages/loginPage/first-page-login";
 import ShopIdSync from "./components/router/ShopIdSync.js";
 import SearchPage from "./pages/searchPage.jsx";
 import SellerHomePage from "./pages/sellerPage/seller-home.jsx";
+import SelfBuyPage from "./pages/produckDetailPage/selfBuyPage.jsx";
 
 import PageGuard from "./components/router/PageGaurd.jsx";
 
@@ -163,6 +164,15 @@ function AppContent() {
                         element={
                             <PageGuard>
                                 <GroupBuyPage />
+                            </PageGuard>
+                        }
+                    />
+
+                    <Route
+                        path="/selfBuy/:shopId/product/:productId"
+                        element={
+                            <PageGuard>
+                                <SelfBuyPage />
                             </PageGuard>
                         }
                     />
