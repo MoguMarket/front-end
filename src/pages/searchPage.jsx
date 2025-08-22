@@ -13,6 +13,7 @@ export default function SearchPage() {
 
     const q = sp.get("q") || "";
     const category = sp.get("category") || null;
+    const page = sp.get("page") || "1";
 
     const handleBack = useCallback(() => {
         if (window.history.length > 2) navigate(-1);
@@ -28,6 +29,16 @@ export default function SearchPage() {
         },
         [sp, setSp]
     );
+
+    // 인풋 포커스 시 제안 화면으로 전환 (q 제거)
+    const handleFocusShowSuggestions = useCallback(() => {
+        // 이미 q가 비어있으면 변경 안 함
+        if ((sp.get("q") || "").trim() === "") return;
+        const next = new URLSearchParams(sp);
+        next.delete("q");
+        next.set("page", "1");
+        setSp(next, { replace: true });
+    }, [sp, setSp]);
 
     const handleClearQuery = useCallback(() => {
         const next = new URLSearchParams(sp);
@@ -113,6 +124,7 @@ export default function SearchPage() {
                 onClear={handleClearQuery}
                 categoryLabel={category}
                 onClearCategory={handleClearCategory}
+                onFocusShowSuggestions={handleFocusShowSuggestions}
             />
 
             <div className="mt-[-10px]">

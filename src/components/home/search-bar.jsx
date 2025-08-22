@@ -10,6 +10,7 @@ export default function SearchBar({
     placeholder = "상품을 검색하세요",
     autoFocus = false, // 검색 전용 화면에서 true
     asStandalone = false,
+    onStandaloneFocus,
 }) {
     const [value, setValue] = useState(defaultValue);
     const nav = useNavigate();
@@ -20,8 +21,14 @@ export default function SearchBar({
         if (autoFocus && inputRef.current) inputRef.current.focus();
     }, [autoFocus]);
 
+    useEffect(() => {
+        setValue(defaultValue);
+    }, [defaultValue]);
+
     const handleFocus = () => {
-        if (!asStandalone) {
+        if (asStandalone) {
+            onStandaloneFocus?.();
+        } else {
             nav("/search");
         }
     };

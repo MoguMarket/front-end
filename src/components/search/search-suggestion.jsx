@@ -51,16 +51,36 @@ export default function SearchSuggestions({ popular = [] }) {
         let alive = true;
         (async () => {
             try {
-                const res = await fetch(
-                    `${import.meta.env.VITE_API_BASE}/api/search/trending`,
-                    {
-                        headers: { Accept: "application/json" },
-                    }
-                );
+                const base = import.meta.env.VITE_API_BASE; // ← 먼저 선언
+                if (!base) {
+                    console.error(
+                        "[trending] VITE_API_BASE is not defined (.env.local 확인)"
+                    );
+                    return;
+                }
+
+                const url = `${String(base).replace(
+                    /\/+$/,
+                    ""
+                )}/api/search/trending`; // ← 그 다음 url
+
+                const res = await fetch(url, {
+                    headers: { Accept: "application/json" },
+                });
+                if (!res.ok) {
+                    console.warn("[trending] non-OK response:", res.status);
+                    return;
+                }
+                const ct = res.headers.get("content-type") || "";
+                if (!ct.includes("application/json")) {
+                    console.warn("[trending] not JSON response");
+                    return;
+                }
                 const json = await res.json();
                 if (!alive) return;
+
                 const kws = extractKeywordsFromResponse(json);
-                if (kws.length) setPopularLocal(kws);
+                setPopularLocal(kws);
             } catch (e) {
                 console.warn("trending fetch failed", e);
             }
@@ -98,7 +118,7 @@ export default function SearchSuggestions({ popular = [] }) {
                 빈 검색어는 전체 상품이 나옵니다.
             </p>
 
-            {/* 최근 검색어 (칩 UI) */}
+            {/* 최근 검색어 */}
             <div className="mt-10">
                 <div className="flex items-center justify-between">
                     <h3 className="text-[15px] font-semibold text-neutral-900">
@@ -135,7 +155,7 @@ export default function SearchSuggestions({ popular = [] }) {
                 )}
             </div>
 
-            {/* 인기 검색어 (동일 칩 UI) */}
+            {/* 인기 검색어 */}
             <div className="mt-6">
                 <h3 className="text-[15px] font-semibold text-neutral-900">
                     인기 검색어
