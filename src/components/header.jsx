@@ -4,19 +4,17 @@ import { MapPin, Bell } from "lucide-react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
 import MARKETS_PLACE from "../components/db/marketPlace-db";
 import React, { useEffect, useState } from "react";
-import {
-  enableWebPush,
-  disableWebPush,
-  listenForeground,
-} from "../lib/webpush";
+import { enableWebPush, disableWebPush, listenForeground } from "../lib/webpush";
 
 export default function Header() {
   const { pathname } = useLocation();
   const [sp] = useSearchParams();
   const shopId = sp.get("shopId");
-  const fromGift = sp.get("from") === "gift"; // ✅ 쿼리 파라미터로 gift 여부 체크
+  const fromGift = sp.get("from") === "gift";
 
-  // shopId로 현재 시장 찾기
+  // SellerPage 여부(하위 경로 포함): /seller, /seller/... 모두 매칭
+  const isSellerPage = pathname.startsWith("/seller");
+
   const sid = shopId ? Number(shopId) : null;
   const currentMarket = sid
     ? MARKETS_PLACE.find((m) => m.id === sid || m.marketId === sid)
@@ -24,7 +22,6 @@ export default function Header() {
 
   const marketName = currentMarket?.name ?? "시장 선택";
 
-  // 🔔 웹푸시 토글 UI 상태
   const [loading, setLoading] = useState(false);
   const [fcmToken, setFcmToken] = useState(
     () => localStorage.getItem("fcmToken") || null
@@ -32,9 +29,7 @@ export default function Header() {
   const enabled = Boolean(fcmToken);
 
   useEffect(() => {
-    listenForeground((p) => {
-      // console.log("포그라운드 알림:", p);
-    });
+    listenForeground(() => {});
   }, []);
 
   const togglePush = async () => {
@@ -55,8 +50,9 @@ export default function Header() {
     }
   };
 
-  // ✅ GiftPage 또는 from=gift 파라미터일 때 헤더 색상 변경
-  const headerColor = pathname === "/gift" || fromGift ? "#F5B236" : "#4CC554";
+  // ✅ GiftPage(from=gift 포함) 또는 SellerPage일 때 노랑(#F5B236), 그 외 초록(#4CC554)
+  const headerColor =
+    pathname === "/gift" || fromGift || isSellerPage ? "#F5B236" : "#4CC554";
 
   return (
     <header

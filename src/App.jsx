@@ -37,6 +37,9 @@ function AppContent() {
     const matchMarketDetail = useMatch("/marketDetailPage/:shopId");
     const isDetailPage = Boolean(matchMarketDetail);
 
+    const isSellerPage =
+        pathname === "/seller-home" || pathname.startsWith("/seller");
+
     const matchProductDetail = useMatch(
         "/marketDetailPage/:shopId/product/:productId"
     );
@@ -49,7 +52,7 @@ function AppContent() {
 
     const isSearchPage = pathname === "/search";
 
-    // 인증 관련 경로에 /register 추가
+    // 인증 관련 경로
     const AUTH_PATHS = new Set([
         "/login",
         "/main-login",
@@ -169,9 +172,10 @@ function AppContent() {
                 </Routes>
             </div>
 
-            {!isAuthPage && !isProductDetailPage && !isGroupBuyPage && (
-                <BottomNavBar />
-            )}
+            {!isAuthPage &&
+                !isProductDetailPage &&
+                !isGroupBuyPage &&
+                !isSellerPage && <BottomNavBar />}
         </div>
     );
 }
