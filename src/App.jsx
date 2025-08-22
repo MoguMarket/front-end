@@ -24,6 +24,7 @@ import SellerLogin from "./pages/loginPage/seller-login.jsx";
 import FirstPageLogin from "./pages/loginPage/first-page-login";
 import ShopIdSync from "./components/router/ShopIdSync.js";
 import SearchPage from "./pages/searchPage.jsx";
+import SellerHomePage from "./pages/sellerPage/seller-home.jsx";
 
 import PageGuard from "./components/router/PageGaurd.jsx";
 
@@ -151,6 +152,9 @@ function AppContent() {
                             </PageGuard>
                         }
                     />
+
+                    <Route path="/seller-home" element={<SellerHomePage />} />
+
                     <Route
                         path="/marketDetailPage/:shopId/product/:productId/groupBuy"
                         element={
