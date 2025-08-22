@@ -28,6 +28,7 @@ import SearchPage from "./pages/searchPage.jsx";
 import PageGuard from "./components/router/PageGaurd.jsx";
 
 import Register from "./pages/loginPage/register.jsx";
+import SelfBuyPage from "./pages/produckDetailPage/selfBuyPage.jsx";
 
 function AppContent() {
   const { pathname } = useLocation();
@@ -45,8 +46,10 @@ function AppContent() {
     "/marketDetailPage/:shopId/product/:productId/groupBuy"
   );
   const isGroupBuyPage = Boolean(matchGroupBuyPage);
-
   const isSearchPage = pathname === "/search";
+
+  const matchSelfBuyPage = useMatch("/selfBuy/:shopId/product/:productId");
+  const isSelfBuyPage = Boolean(matchSelfBuyPage);
 
   // ✅ 인증 관련 경로에 /register 추가
   const AUTH_PATHS = new Set([
@@ -156,15 +159,24 @@ function AppContent() {
               </PageGuard>
             }
           />
+          <Route
+            path="/selfBuy/:shopId/product/:productId"
+            element={
+              <PageGuard>
+                <SelfBuyPage />
+              </PageGuard>
+            }
+          />
 
           {/* 없는 경로 → 홈으로 */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
 
-      {!isAuthPage && !isProductDetailPage && !isGroupBuyPage && (
-        <BottomNavBar />
-      )}
+      {!isAuthPage &&
+        !isProductDetailPage &&
+        !isGroupBuyPage &&
+        !isSelfBuyPage && <BottomNavBar />}
     </div>
   );
 }
