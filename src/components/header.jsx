@@ -3,20 +3,19 @@ import logo from "../assets/header-logo.svg";
 import { MapPin, Bell } from "lucide-react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import {
-  enableWebPush,
-  disableWebPush,
-  listenForeground,
-} from "../lib/webpush";
+import { enableWebPush, disableWebPush, listenForeground } from "../lib/webpush";
 
 const API_BASE = import.meta.env.VITE_API_BASE;
 
 export default function Header() {
   const { pathname } = useLocation();
   const [sp] = useSearchParams();
-  const shopId = sp.get("shopId"); // ← 여기서는 '시장 id'로 사용
+
+  // 쿼리스트링: shopId=시장ID, from=gift
+  const shopId = sp.get("shopId"); // ← '시장 id'
   const fromGift = sp.get("from") === "gift";
 
+  // 헤더에 표시할 시장명
   const [marketName, setMarketName] = useState("시장 선택");
 
   // ── 시장 이름 가져오기: /api/market/db?page=0&size=500 에서 id 매칭
