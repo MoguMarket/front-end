@@ -2,26 +2,65 @@
 import logo from "../assets/header-logo.svg";
 import { MapPin, Bell } from "lucide-react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
-import MARKETS_PLACE from "../components/db/marketPlace-db";
 import React, { useEffect, useState } from "react";
-import { enableWebPush, disableWebPush, listenForeground } from "../lib/webpush";
+import {
+  enableWebPush,
+  disableWebPush,
+  listenForeground,
+} from "../lib/webpush";
+
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 export default function Header() {
   const { pathname } = useLocation();
   const [sp] = useSearchParams();
-  const shopId = sp.get("shopId");
+  const shopId = sp.get("shopId"); // ← 여기서는 '시장 id'로 사용
   const fromGift = sp.get("from") === "gift";
 
-  // SellerPage 여부(하위 경로 포함): /seller, /seller/... 모두 매칭
-  const isSellerPage = pathname.startsWith("/seller");
+  const [marketName, setMarketName] = useState("시장 선택");
 
-  const sid = shopId ? Number(shopId) : null;
-  const currentMarket = sid
-    ? MARKETS_PLACE.find((m) => m.id === sid || m.marketId === sid)
-    : null;
+  // ── 시장 이름 가져오기: /api/market/db?page=0&size=500 에서 id 매칭
+  useEffect(() => {
+    if (!shopId) return;
+    const sid = Number(shopId);
+    if (!Number.isFinite(sid)) return;
 
-  const marketName = currentMarket?.name ?? "시장 선택";
+    // 캐시 체크
+    const cacheKey = `market:name:${sid}`;
+    const cached = sessionStorage.getItem(cacheKey);
+    if (cached) {
+      setMarketName(cached);
+      return;
+    }
 
+    const ac = new AbortController();
+    (async () => {
+      try {
+        const url = new URL("/api/market/db", API_BASE);
+        url.searchParams.set("page", "0");
+        url.searchParams.set("size", "500");
+        const res = await fetch(url.toString(), { signal: ac.signal });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        const list = Array.isArray(json?.content) ? json.content : [];
+        const found = list.find((m) => Number(m?.id) === sid);
+        if (found?.name) {
+          setMarketName(found.name);
+          sessionStorage.setItem(cacheKey, found.name);
+        } else {
+          setMarketName("시장 선택");
+        }
+      } catch (e) {
+        if (e.name !== "AbortError") {
+          console.error("[Header] 시장 조회 실패:", e);
+          setMarketName("시장 선택");
+        }
+      }
+    })();
+    return () => ac.abort();
+  }, [shopId]);
+
+  // ── 웹푸시
   const [loading, setLoading] = useState(false);
   const [fcmToken, setFcmToken] = useState(
     () => localStorage.getItem("fcmToken") || null
@@ -50,9 +89,7 @@ export default function Header() {
     }
   };
 
-  // ✅ GiftPage(from=gift 포함) 또는 SellerPage일 때 노랑(#F5B236), 그 외 초록(#4CC554)
-  const headerColor =
-    pathname === "/gift" || fromGift || isSellerPage ? "#F5B236" : "#4CC554";
+  const headerColor = pathname === "/gift" || fromGift ? "#F5B236" : "#4CC554";
 
   return (
     <header
@@ -75,7 +112,7 @@ export default function Header() {
           <img src={logo} alt="Logo" className="h-6 ml-[-15px]" />
         </Link>
 
-        {/* 오른쪽: 종 아이콘 (토글) */}
+        {/* 오른쪽: 종 아이콘 */}
         <button
           type="button"
           onClick={togglePush}
