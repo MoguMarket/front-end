@@ -19,31 +19,39 @@ export async function enableWebPush() {
     console.log("[WebPush] 권한 상태:", perm);
     if (perm !== "granted") throw new Error("알림 권한이 허용되지 않았어요.");
 
-    console.log("[WebPush] VAPID 키 요청...");
-    const vkRes = await fetch(`${API}/api/fcm/web/vapid-key`, {
-      credentials: "include",
-    });
-    const { vapidKey } = await vkRes.json();
+    // VAPID 키 가져오기 (테스트용으로 하드코딩)
+    const vapidKey =
+      "BOx7rbfSOiX3dyVWlgmslQAoV6s2vTYWYHFRhR8t4YNGTS9no9UA_3We8j6TithuJue5dCxXKAKiTYGkh0Y0bIg";
     console.log("[WebPush] VAPID 키(앞 12자):", vapidKey?.slice(0, 12), "…");
     if (!vapidKey) throw new Error("VAPID 키를 가져오지 못했어요.");
 
-    // 루트 스코프로 등록된 SW 보장
+    // 서비스워커 준비
     const swReg = await navigator.serviceWorker.ready;
     console.log("[WebPush] SW ready. scope =", swReg.scope);
 
+    // Messaging 객체 준비
     console.log("[WebPush] messaging 준비 중...");
     const messaging = await messagingPromise;
     if (!messaging) throw new Error("이 브라우저는 FCM 미지원이에요.");
-    console.log("[FB cfg]", messaging.app.options); // projectId/senderId 확인용
 
+    // 앱 정보 안전하게 출력
+    const appInfo = messaging.app?.options ?? null;
+    if (appInfo) {
+      console.log("[FB cfg]", appInfo);
+    } else {
+      console.warn("[FB cfg] Firebase 앱 정보가 없습니다. .env 설정 확인 필요");
+    }
+
+    // FCM 토큰 발급
     console.log("[WebPush] FCM 토큰 발급 시도...");
     const token = await getToken(messaging, {
       vapidKey,
-      serviceWorkerRegistration: swReg, // 중요!
+      serviceWorkerRegistration: swReg,
     });
     console.log("[WebPush] 발급된 토큰:", token);
     if (!token) throw new Error("FCM 토큰 발급 실패");
 
+    // 서버 등록
     console.log("[WebPush] 서버에 토큰 등록 중...");
     const res = await fetch(`${API}/api/fcm/register`, {
       method: "POST",
@@ -103,16 +111,11 @@ export function listenForeground(callback) {
   });
 }
 
-/** (선택) VAPID 키 비교용 디버그 헬퍼 — 필요시 콘솔에서 호출 */
+/** VAPID 키 디버그 출력 */
 export async function debugPrintVapid() {
-  const r = await fetch(
-    `${import.meta.env.VITE_API_BASE}/api/fcm/web/vapid-key`,
-    {
-      credentials: "include",
-    }
-  );
+  const r = await fetch(`${API}/api/fcm/web/vapid-key`, {
+    credentials: "include",
+  });
   const { vapidKey } = await r.json();
-  console.log("[VAPID] from API :", vapidKey);
-  // 여기 콘솔에서 Firebase 콘솔 공개키를 붙여 비교하세요
-  // console.log('[VAPID] from Firebase 콘솔 :', 'B....');
+  console.log("[VAPID] from API:", vapidKey);
 }

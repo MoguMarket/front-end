@@ -1,7 +1,7 @@
-import { initializeApp, getApps, getApp } from "firebase/app";
+// src/lib/firebase.js
+import { initializeApp } from "firebase/app";
 import { getMessaging, isSupported } from "firebase/messaging";
 
-// 환경변수 기반 Firebase 설정
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FB_API_KEY,
   authDomain: import.meta.env.VITE_FB_AUTH_DOMAIN,
@@ -9,22 +9,31 @@ const firebaseConfig = {
   storageBucket: import.meta.env.VITE_FB_STORAGE_BUCKET,
   messagingSenderId: import.meta.env.VITE_FB_SENDER_ID,
   appId: import.meta.env.VITE_FB_APP_ID,
-  measurementId: import.meta.env.VITE_FB_MEASUREMENT_ID, // 필요하면 추가
 };
 
-// 이미 초기화된 게 있으면 재사용, 없으면 새로 초기화
-export const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
 
-// FCM 지원 브라우저에서만 messaging 가져오기
-export const messagingPromise = isSupported().then((ok) => {
-  if (!ok) {
-    console.warn("이 브라우저는 FCM을 지원하지 않습니다.");
-    return null;
+// 일부 브라우저/환경 미지원 방지
+export const messagingPromise = (async () => {
+  try {
+    if (typeof window !== "undefined" && "Notification" in window) {
+      return getMessaging(app);
+    }
+  } catch (e) {
+    console.error("Firebase Messaging 초기화 실패:", e);
   }
-  return getMessaging(app);
-});
+  return null;
+})();
 
-// 개발 환경에서 환경변수 제대로 들어오는지 체크
+const cfg = {
+  apiKey: import.meta.env.VITE_FB_API_KEY,
+  authDomain: import.meta.env.VITE_FB_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FB_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FB_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FB_SENDER_ID,
+  appId: import.meta.env.VITE_FB_APP_ID,
+};
+
 if (import.meta.env.DEV) {
-  console.log("[Firebase Config Check]", firebaseConfig);
+  console.log("[FB cfg]", cfg); // 전부 문자열로 찍혀야 OK (undefined/빈문자면 문제)
 }
