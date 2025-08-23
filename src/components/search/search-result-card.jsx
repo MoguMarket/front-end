@@ -8,41 +8,85 @@ const API_BASE = import.meta.env.VITE_API_BASE;
 export default function SearchResultCard({ item }) {
   const navigate = useNavigate();
 
-  // ----- 기본 필드 정규화 -----
-  const productId = item?.productId ?? item?.id;
-  const storeId = item?.storeId ?? item?.storeID;
-  const name = item?.name ?? "상품";
-  const imageUrl = item?.imageUrl || "/images/placeholder.jpg";
-  const originalPrice = Number(item?.originalPricePerBaseUnit ?? 0);
-  const discountedPrice = Number(
-    item?.appliedUnitPrice ?? item?.originalPricePerBaseUnit ?? 0
-  );
-  const marketName = item?.storeName ?? "";
-  const progressCurrent = item?.currentQty ?? null;
-  const progressMax = item?.targetQty ?? null;
+  // --- 기본(서치 응답) 정규화
+  const baseProductId = item?.productId ?? item?.id;
+  const baseStoreId = item?.storeId ?? item?.storeID;
 
-  // ----- 리뷰 수 가져오기 -----
+  // --- 표시용 상태(overview로 덮어쓰기)
+  const [view, setView] = useState({
+    productId: baseProductId,
+    storeId: baseStoreId,
+    name: item?.name ?? "상품",
+    imageUrl: item?.imageUrl || "/images/placeholder.jpg",
+    originalPrice: Number(item?.originalPricePerBaseUnit ?? 0),
+    discountedPrice: Number(
+      item?.appliedUnitPrice ?? item?.originalPricePerBaseUnit ?? 0
+    ),
+    marketName: item?.storeName ?? "",
+    currentQty: item?.currentQty ?? null,
+    targetQty: item?.targetQty ?? null,
+    currentDiscountPercent: item?.currentDiscountPercent ?? null,
+  });
+
+  // --- 리뷰 카운트
   const [reviewCount, setReviewCount] = useState(0);
-  const [rating, setRating] = useState(0);
+  const [rating] = useState(0);
 
+  // ✅ overview API 불러오기
   useEffect(() => {
-    if (!productId) return;
+    if (!baseProductId) return;
+    let aborted = false;
+
     (async () => {
       try {
         const res = await fetch(
-          `${API_BASE}/api/reviews?productId=${productId}&page=0&size=1`
+          `${API_BASE}/api/products/${baseProductId}/overview`,
+          { headers: { Accept: "application/json" } }
         );
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const json = await res.json();
-        setReviewCount(json?.page?.totalElements ?? 0);
-        // TODO: 별점 평균 필드 있으면 setRating()에 반영
-      } catch (e) {
-        console.warn("리뷰 fetch 실패:", e);
-      }
-    })();
-  }, [productId]);
+        if (!res.ok) return;
+        const ov = await res.json();
+        if (aborted) return;
 
-  // ----- 좋아요 버튼 → 장바구니 추가 -----
+        setView((prev) => ({
+          ...prev,
+          productId: ov.productId ?? prev.productId,
+          storeId: ov.storeId ?? prev.storeId,
+          name: ov.name ?? prev.name,
+          imageUrl: ov.imageUrl || prev.imageUrl,
+          originalPrice: Number(
+            ov.originalPricePerBaseUnit ?? prev.originalPrice
+          ),
+          discountedPrice: Number(ov.appliedUnitPrice ?? prev.discountedPrice),
+          marketName: ov.storeName ?? prev.marketName,
+          currentQty: ov.currentQty ?? prev.currentQty,
+          targetQty: ov.targetQty ?? prev.targetQty,
+          currentDiscountPercent:
+            ov.currentDiscountPercent ?? prev.currentDiscountPercent,
+        }));
+      } catch {}
+    })();
+
+    return () => {
+      aborted = true;
+    };
+  }, [baseProductId]);
+
+  // 리뷰 수 API
+  useEffect(() => {
+    if (!baseProductId) return;
+    (async () => {
+      try {
+        const r = await fetch(
+          `${API_BASE}/api/reviews?productId=${baseProductId}&page=0&size=1`
+        );
+        if (!r.ok) return;
+        const j = await r.json();
+        setReviewCount(j?.page?.totalElements ?? 0);
+      } catch {}
+    })();
+  }, [baseProductId]);
+
+  // 장바구니 추가
   const handleAddCart = async () => {
     try {
       const token =
@@ -50,19 +94,18 @@ export default function SearchResultCard({ item }) {
         localStorage.getItem("token") ||
         sessionStorage.getItem("accessToken");
 
-      const res = await fetch(`${API_BASE}/api/carts`, {
+      const r = await fetch(`${API_BASE}/api/carts`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}), // JWT 방식
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
-        credentials: "include", // 쿠키 세션 방식
-        body: JSON.stringify({ productId, quantity: 1 }),
+        credentials: "include",
+        body: JSON.stringify({ productId: view.productId, quantity: 1 }),
       });
 
-      if (res.status === 401) {
+      if (r.status === 401) {
         alert("로그인이 필요합니다.");
-        // 로그인 후 돌아오게 리다이렉트
         navigate(
           `/login?redirect=${encodeURIComponent(
             location.pathname + location.search
@@ -70,39 +113,45 @@ export default function SearchResultCard({ item }) {
         );
         return;
       }
-      if (!res.ok) throw new Error(`Cart HTTP ${res.status}`);
-
+      if (!r.ok) throw new Error();
       alert("장바구니에 추가되었습니다.");
-    } catch (e) {
-      console.error(e);
+    } catch {
       alert("장바구니 추가 실패");
     }
   };
 
-  // ----- 상세 페이지 이동 -----
+  // 상세 이동
   const handleClickCard = () => {
     navigate(
-      `/marketDetailPage/${storeId}/product/${productId}?shopId=${storeId}`
+      `/marketDetailPage/${view.storeId}/product/${view.productId}?shopId=${view.storeId}`
     );
   };
 
-  // ----- 계산 -----
+  // 상점명 클릭 → 상점(마켓) 페이지 이동
+  const handleClickMarket = (e) => {
+    e.stopPropagation();
+    navigate(`/marketDetailPage/${view.storeId}?shopId=${view.storeId}`);
+  };
+
+  // 계산
   const discountRate =
-    originalPrice > 0
-      ? Math.round(((originalPrice - discountedPrice) / originalPrice) * 100)
-      : 0;
+    view.originalPrice > 0
+      ? Math.round(
+          ((view.originalPrice - view.discountedPrice) / view.originalPrice) *
+            100
+        )
+      : view.currentDiscountPercent ?? 0;
 
   const percent =
-    typeof progressCurrent === "number" &&
-    typeof progressMax === "number" &&
-    progressMax > 0
-      ? Math.round((progressCurrent / progressMax) * 100)
+    typeof view.currentQty === "number" &&
+    typeof view.targetQty === "number" &&
+    view.targetQty > 0
+      ? Math.round((view.currentQty / view.targetQty) * 100)
       : 0;
 
-  const barColorClass =
-    percent != null && percent >= 80 ? "bg-[#D85C54]" : "bg-[#4CC554]";
+  const barColorClass = percent >= 80 ? "bg-[#D85C54]" : "bg-[#4CC554]";
 
-  // ----- UI (ProductCard 디자인 복사) -----
+  // UI (ProductCard 스타일)
   return (
     <div
       className="bg-white rounded-xl relative border border-gray-200 overflow-hidden cursor-pointer select-none"
@@ -110,11 +159,10 @@ export default function SearchResultCard({ item }) {
       tabIndex={0}
       onClick={handleClickCard}
     >
-      {/* 이미지 */}
       <div className="relative w-full aspect-[4/3]">
         <img
-          src={imageUrl}
-          alt={name}
+          src={view.imageUrl}
+          alt={view.name}
           className="absolute inset-0 w-full h-full object-cover"
           loading="lazy"
         />
@@ -131,44 +179,42 @@ export default function SearchResultCard({ item }) {
         </button>
       </div>
 
-      {percent != null && (
-        <div className="px-3 pt-2">
+      <div className="px-3 pt-2">
+        <div
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={percent}
+          className="w-full h-2 rounded-full bg-neutral-200"
+        >
           <div
-            role="progressbar"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={percent}
-            className="w-full h-2 rounded-full bg-neutral-200"
-          >
-            <div
-              className={`h-full rounded-full ${barColorClass} transition-[width] duration-300`}
-              style={{ width: `${percent}%` }}
-            />
-          </div>
+            className={`h-full rounded-full ${barColorClass} transition-[width] duration-300`}
+            style={{ width: `${percent}%` }}
+          />
         </div>
-      )}
+      </div>
 
       <div className="p-3">
-        {marketName && (
+        {view.marketName && (
           <button
             type="button"
-            onClick={(e) => e.stopPropagation()}
+            onClick={handleClickMarket}
             className="text-sm text-green-600 hover:underline"
           >
-            {marketName}
+            {view.marketName}
           </button>
         )}
 
-        <div className="text-sm font-medium mt-1">{name}</div>
+        <div className="text-sm font-medium mt-1">{view.name}</div>
 
         <p className="text-xs text-gray-400 line-through">
-          {originalPrice.toLocaleString()}원
+          {view.originalPrice.toLocaleString()}원
         </p>
 
         <div className="mt-1 flex gap-1 items-center">
           <span className="text-[#D85C54] font-bold">{discountRate}%</span>
           <span className="font-semibold">
-            {discountedPrice.toLocaleString()}원
+            {view.discountedPrice.toLocaleString()}원
           </span>
         </div>
 
