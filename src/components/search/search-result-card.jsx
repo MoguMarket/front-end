@@ -1,53 +1,182 @@
-import React from "react";
+// src/components/search/SearchResultCard.jsx
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Heart, Star } from "lucide-react";
 
-function formatDate(iso) {
-  if (!iso) return "";
-  try {
-    return new Date(iso).toLocaleString("ko-KR", {
-      dateStyle: "medium",
-      timeStyle: "short",
-    });
-  } catch {
-    return iso;
-  }
-}
+const API_BASE = import.meta.env.VITE_API_BASE;
 
-/**
- * 단일 검색 결과 카드
- * @param {{ item: any }} props
- */
 export default function SearchResultCard({ item }) {
-  if (!item) return null;
+  const navigate = useNavigate();
 
-  const name = item?.name ?? "이름 미상";
-  const desc = item?.description ?? "";
-  const updated = formatDate(item?.updatedAt);
+  // ----- 기본 필드 정규화 -----
+  const productId = item?.productId ?? item?.id;
+  const storeId = item?.storeId ?? item?.storeID;
+  const name = item?.name ?? "상품";
+  const imageUrl = item?.imageUrl || "/images/placeholder.jpg";
+  const originalPrice = Number(item?.originalPricePerBaseUnit ?? 0);
+  const discountedPrice = Number(
+    item?.appliedUnitPrice ?? item?.originalPricePerBaseUnit ?? 0
+  );
+  const marketName = item?.storeName ?? "";
+  const progressCurrent = item?.currentQty ?? null;
+  const progressMax = item?.targetQty ?? null;
 
+  // ----- 리뷰 수 가져오기 -----
+  const [reviewCount, setReviewCount] = useState(0);
+  const [rating, setRating] = useState(0);
+
+  useEffect(() => {
+    if (!productId) return;
+    (async () => {
+      try {
+        const res = await fetch(
+          `${API_BASE}/api/reviews?productId=${productId}&page=0&size=1`
+        );
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        setReviewCount(json?.page?.totalElements ?? 0);
+        // TODO: 별점 평균 필드 있으면 setRating()에 반영
+      } catch (e) {
+        console.warn("리뷰 fetch 실패:", e);
+      }
+    })();
+  }, [productId]);
+
+  // ----- 좋아요 버튼 → 장바구니 추가 -----
+  const handleAddCart = async () => {
+    try {
+      const token =
+        localStorage.getItem("accessToken") ||
+        localStorage.getItem("token") ||
+        sessionStorage.getItem("accessToken");
+
+      const res = await fetch(`${API_BASE}/api/carts`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}), // JWT 방식
+        },
+        credentials: "include", // 쿠키 세션 방식
+        body: JSON.stringify({ productId, quantity: 1 }),
+      });
+
+      if (res.status === 401) {
+        alert("로그인이 필요합니다.");
+        // 로그인 후 돌아오게 리다이렉트
+        navigate(
+          `/login?redirect=${encodeURIComponent(
+            location.pathname + location.search
+          )}`
+        );
+        return;
+      }
+      if (!res.ok) throw new Error(`Cart HTTP ${res.status}`);
+
+      alert("장바구니에 추가되었습니다.");
+    } catch (e) {
+      console.error(e);
+      alert("장바구니 추가 실패");
+    }
+  };
+
+  // ----- 상세 페이지 이동 -----
+  const handleClickCard = () => {
+    navigate(
+      `/marketDetailPage/${storeId}/product/${productId}?shopId=${storeId}`
+    );
+  };
+
+  // ----- 계산 -----
+  const discountRate =
+    originalPrice > 0
+      ? Math.round(((originalPrice - discountedPrice) / originalPrice) * 100)
+      : 0;
+
+  const percent =
+    typeof progressCurrent === "number" &&
+    typeof progressMax === "number" &&
+    progressMax > 0
+      ? Math.round((progressCurrent / progressMax) * 100)
+      : 0;
+
+  const barColorClass =
+    percent != null && percent >= 80 ? "bg-[#D85C54]" : "bg-[#4CC554]";
+
+  // ----- UI (ProductCard 디자인 복사) -----
   return (
-    <li className="w-full rounded-2xl border border-neutral-200 bg-white p-3 flex gap-3">
-      {/* 썸네일 자리 */}
-      <div className="w-20 h-20 shrink-0 rounded-xl bg-neutral-100 flex items-center justify-center text-xs text-neutral-400">
-        no image
+    <div
+      className="bg-white rounded-xl relative border border-gray-200 overflow-hidden cursor-pointer select-none"
+      role="button"
+      tabIndex={0}
+      onClick={handleClickCard}
+    >
+      {/* 이미지 */}
+      <div className="relative w-full aspect-[4/3]">
+        <img
+          src={imageUrl}
+          alt={name}
+          className="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
+        />
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleAddCart();
+          }}
+          className="absolute bottom-2 right-2 bg-white rounded-full p-1"
+          aria-label="장바구니 추가"
+        >
+          <Heart size={16} className="text-gray-300" />
+        </button>
       </div>
 
-      {/* 정보 */}
-      <div className="min-w-0 flex-1">
-        <p className="text-[15px] font-medium text-neutral-900 line-clamp-2">
-          {name}
+      {percent != null && (
+        <div className="px-3 pt-2">
+          <div
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={percent}
+            className="w-full h-2 rounded-full bg-neutral-200"
+          >
+            <div
+              className={`h-full rounded-full ${barColorClass} transition-[width] duration-300`}
+              style={{ width: `${percent}%` }}
+            />
+          </div>
+        </div>
+      )}
+
+      <div className="p-3">
+        {marketName && (
+          <button
+            type="button"
+            onClick={(e) => e.stopPropagation()}
+            className="text-sm text-green-600 hover:underline"
+          >
+            {marketName}
+          </button>
+        )}
+
+        <div className="text-sm font-medium mt-1">{name}</div>
+
+        <p className="text-xs text-gray-400 line-through">
+          {originalPrice.toLocaleString()}원
         </p>
 
-        {desc && (
-          <p className="mt-1 text-[13px] text-neutral-600 line-clamp-2">
-            {desc}
-          </p>
-        )}
+        <div className="mt-1 flex gap-1 items-center">
+          <span className="text-[#D85C54] font-bold">{discountRate}%</span>
+          <span className="font-semibold">
+            {discountedPrice.toLocaleString()}원
+          </span>
+        </div>
 
-        {updated && (
-          <p className="mt-1 text-[12px] text-neutral-400">
-            {updated} 업데이트
-          </p>
-        )}
+        <div className="flex items-center text-xs text-gray-600 mt-1">
+          <Star size={12} className="mr-1 text-[#D85C54]" fill="currentColor" />
+          {rating} ({reviewCount})
+        </div>
       </div>
-    </li>
+    </div>
   );
 }
