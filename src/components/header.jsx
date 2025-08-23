@@ -10,23 +10,13 @@ const API_BASE = import.meta.env.VITE_API_BASE;
 export default function Header() {
   const { pathname } = useLocation();
   const [sp] = useSearchParams();
-<<<<<<< HEAD
-  const shopId = sp.get("shopId");
+
+  // 쿼리스트링: shopId=시장ID, from=gift
+  const shopId = sp.get("shopId"); // ← '시장 id'
   const fromGift = sp.get("from") === "gift";
 
-  // SellerPage 여부(하위 경로 포함): /seller, /seller/... 모두 매칭
-  const isSellerPage = pathname.startsWith("/seller");
-
-  const sid = shopId ? Number(shopId) : null;
-  const currentMarket = sid
-    ? MARKETS_PLACE.find((m) => m.id === sid || m.marketId === sid)
-    : null;
-=======
-  const shopId = sp.get("shopId"); // ← 여기서는 '시장 id'로 사용
-  const fromGift = sp.get("from") === "gift";
-
+  // 헤더에 표시할 시장명
   const [marketName, setMarketName] = useState("시장 선택");
->>>>>>> f784cca (feat: 시장 더미데이터 마켓/db api로 교체)
 
   // ── 시장 이름 가져오기: /api/market/db?page=0&size=500 에서 id 매칭
   useEffect(() => {
@@ -34,8 +24,6 @@ export default function Header() {
     const sid = Number(shopId);
     if (!Number.isFinite(sid)) return;
 
-<<<<<<< HEAD
-=======
     // 캐시 체크
     const cacheKey = `market:name:${sid}`;
     const cached = sessionStorage.getItem(cacheKey);
@@ -72,7 +60,6 @@ export default function Header() {
   }, [shopId]);
 
   // ── 웹푸시
->>>>>>> f784cca (feat: 시장 더미데이터 마켓/db api로 교체)
   const [loading, setLoading] = useState(false);
   const [fcmToken, setFcmToken] = useState(
     () => localStorage.getItem("fcmToken") || null

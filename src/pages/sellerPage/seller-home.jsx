@@ -16,7 +16,7 @@ export default function SellerHomePage() {
                     </p>
                 ) : (
                     <p className="text-sm text-neutral-600 mt-1">
-                        샵 정보를 선택해 주세요.
+                        상점 정보를 선택해 주세요.
                     </p>
                 )}
                 {/* TODO: 판매자 대시보드 위젯들 렌더링 */}

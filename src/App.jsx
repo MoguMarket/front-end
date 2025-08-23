@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import BottomNavBar from "./components/bottomnavbar";
 import Header from "./components/header";
+import SellerHeader from "./components/seller/seller-header.jsx";
 
 import HomePage from "./pages/homePage";
 import GiftPage from "./pages/giftPage";
@@ -28,11 +29,11 @@ import SellerHomePage from "./pages/sellerPage/seller-home.jsx";
 import SelfBuyPage from "./pages/produckDetailPage/selfBuyPage.jsx";
 
 import PageGuard from "./components/router/PageGaurd.jsx";
-
 import Register from "./pages/loginPage/register.jsx";
 
 function AppContent() {
     const { pathname } = useLocation();
+
     const isMapPage = pathname === "/marketMapList";
 
     const matchMarketDetail = useMatch("/marketDetailPage/:shopId");
@@ -63,23 +64,34 @@ function AppContent() {
     ]);
     const isAuthPage = AUTH_PATHS.has(pathname);
 
+    // add-product 플래그
+    const isAddProduct =
+        pathname === "/seller/add-product" || pathname === "/add-product";
+
+    // 헤더 노출 여부(헤더 보이면 본문에 pt-16 주기)
+    const showHeader =
+        !isAuthPage &&
+        !isMapPage &&
+        !isDetailPage &&
+        !isProductDetailPage &&
+        !isSearchPage;
+
     return (
         <div className="relative w-full max-w-[390px] mx-auto bg-white">
             <ShopIdSync />
-            {!isAuthPage &&
-                !isMapPage &&
-                !isDetailPage &&
-                !isProductDetailPage &&
-                !isSearchPage && <Header />}
+
+            {/* 헤더 분기: 셀러/상품등록이면 SellerHeader, 그 외 기본 Header */}
+            {showHeader &&
+                (isAddProduct || isSellerPage ? <SellerHeader /> : <Header />)}
 
             <div
-                className={`min-h-screen ${
+                className={`min-h-screen ${showHeader ? "pt-16" : ""} ${
                     isAuthPage ||
                     isMapPage ||
                     isDetailPage ||
                     isProductDetailPage
                         ? ""
-                        : "pt-16 pb-16 px-4"
+                        : "pb-16 px-4"
                 }`}
             >
                 <Routes>
@@ -88,7 +100,6 @@ function AppContent() {
                     <Route path="/firstpage" element={<FirstPageLogin />} />
                     <Route path="/login" element={<MainLogin />} />
                     <Route path="/seller-login" element={<SellerLogin />} />
-                    {/* 회원가입 공개 경로 */}
                     <Route path="/register" element={<Register />} />
 
                     {/* 보호 경로 */}
@@ -167,7 +178,6 @@ function AppContent() {
                             </PageGuard>
                         }
                     />
-
                     <Route
                         path="/selfBuy/:shopId/product/:productId"
                         element={
