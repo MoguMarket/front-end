@@ -27,6 +27,7 @@ import ShopIdSync from "./components/router/ShopIdSync.js";
 import SearchPage from "./pages/searchPage.jsx";
 import SellerHomePage from "./pages/sellerPage/seller-home.jsx";
 import SelfBuyPage from "./pages/produckDetailPage/selfBuyPage.jsx";
+import SellerBottomNav from "./components/seller/seller-navbar.jsx";
 
 import PageGuard from "./components/router/PageGaurd.jsx";
 import Register from "./pages/loginPage/register.jsx";
@@ -195,7 +196,7 @@ function AppContent() {
             {!isAuthPage &&
                 !isProductDetailPage &&
                 !isGroupBuyPage &&
-                !isSellerPage && <BottomNavBar />}
+                (isSellerPage ? <SellerBottomNav /> : <BottomNavBar />)}
         </div>
     );
 }
