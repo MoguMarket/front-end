@@ -1,6 +1,6 @@
 // src/lib/firebase.js
 import { initializeApp } from "firebase/app";
-import { getMessaging, isSupported } from "firebase/messaging";
+import { getMessaging } from "firebase/messaging";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FB_API_KEY,

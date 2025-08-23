@@ -16,19 +16,18 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [shop, setShop] = useState(null);
   const [product, setProduct] = useState(null);
-  const [reviewCount, setReviewCount] = useState(0); // ✅ 추가
-  const [rating, setRating] = useState(0); // 평균 별점 있으면 여기로
+  const [reviewCount, setReviewCount] = useState(0);
+  const [rating, setRating] = useState(0);
 
   useEffect(() => {
     let aborted = false;
+
     (async () => {
       try {
         setLoading(true);
         const res = await fetch(
           `${API_BASE}/api/products/${productId}/overview`,
-          {
-            headers: { Accept: "application/json" },
-          }
+          { headers: { Accept: "application/json" } }
         );
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const ov = await res.json();
@@ -42,16 +41,16 @@ export default function ProductDetailPage() {
           id: ov.productId ?? Number(productId),
           name: ov.name ?? "상품",
           imageUrl: ov.imageUrl ?? "/images/placeholder.jpg",
-          unit: ov.unit ?? "",
+          unit: ov.unit ?? "KG",
           originalPrice: original,
           discountedPrice: discounted,
           stock: ov.stock ?? 0,
           progressCurrent:
-            typeof ov.currentQty === "number" ? ov.currentQty : null,
-          progressMax: typeof ov.targetQty === "number" ? ov.targetQty : null,
+            typeof ov.currentQty === "number" ? ov.currentQty : 0,
+          progressMax: typeof ov.targetQty === "number" ? ov.targetQty : 0,
           groupBuyStatus: ov.groupBuyStatus ?? null,
           maxDiscountPercent: ov.maxDiscountPercent ?? null,
-          currentDiscountPercent: ov.currentDiscountPercent ?? null,
+          currentDiscountPercent: ov.currentDiscountPercent ?? 0,
           startAt: ov.startAt,
           endAt: ov.endAt,
           remainingToNextStage: ov.remainingToNextStage,
@@ -65,19 +64,25 @@ export default function ProductDetailPage() {
       }
     })();
 
-    // ✅ 리뷰 개수만 빠르게 가져오기 (totalElements 사용)
+    // ✅ 리뷰 요약(평균/개수)
     (async () => {
       try {
         const r = await fetch(
-          `${API_BASE}/api/reviews?productId=${productId}&page=0&size=1`,
+          `${API_BASE}/api/reviews/summary?productId=${productId}`,
           { headers: { Accept: "application/json" } }
         );
-        if (!r.ok) return;
-        const j = await r.json();
-        setReviewCount(j?.page?.totalElements ?? 0);
-        // 평균 별점 필드가 생기면 setRating(j.averageRating) 같이 반영
+        if (!r.ok) {
+          setRating(0);
+          setReviewCount(0);
+          return;
+        }
+        const s = await r.json();
+        if (aborted) return;
+        setRating(Number(s?.average ?? 0));
+        setReviewCount(Number(s?.count ?? 0));
       } catch (e) {
-        console.warn("review fetch failed:", e);
+        console.warn("[ProductDetail] review summary fetch failed:", e);
+        setRating(0);
         setReviewCount(0);
       }
     })();
@@ -110,13 +115,13 @@ export default function ProductDetailPage() {
   return (
     <div className="relative w-full max-w-[390px] mx-auto pt-14 pb-16">
       <Header marketName={shop.name} />
+
       <img
         src={product.imageUrl}
         alt={product.name}
         className="w-full aspect-[4/3] object-cover rounded-b-lg"
       />
 
-      {/* 필요하면 reviewCount / rating을 하위로 내려서 표시 */}
       <ProductSale shop={shop} product={{ ...product, reviewCount, rating }} />
 
       <MoguProgress
