@@ -45,16 +45,37 @@ export default function SearchResultCard({ item }) {
   // ----- 좋아요 버튼 → 장바구니 추가 -----
   const handleAddCart = async () => {
     try {
+      const token =
+        localStorage.getItem("accessToken") ||
+        localStorage.getItem("token") ||
+        sessionStorage.getItem("accessToken");
+
       const res = await fetch(`${API_BASE}/api/carts`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}), // JWT 방식
+        },
+        credentials: "include", // 쿠키 세션 방식
         body: JSON.stringify({ productId, quantity: 1 }),
       });
+
+      if (res.status === 401) {
+        alert("로그인이 필요합니다.");
+        // 로그인 후 돌아오게 리다이렉트
+        navigate(
+          `/login?redirect=${encodeURIComponent(
+            location.pathname + location.search
+          )}`
+        );
+        return;
+      }
       if (!res.ok) throw new Error(`Cart HTTP ${res.status}`);
+
       alert("장바구니에 추가되었습니다.");
     } catch (e) {
-      alert("장바구니 추가 실패");
       console.error(e);
+      alert("장바구니 추가 실패");
     }
   };
 
@@ -72,9 +93,11 @@ export default function SearchResultCard({ item }) {
       : 0;
 
   const percent =
-    progressCurrent && progressMax
+    typeof progressCurrent === "number" &&
+    typeof progressMax === "number" &&
+    progressMax > 0
       ? Math.round((progressCurrent / progressMax) * 100)
-      : null;
+      : 0;
 
   const barColorClass =
     percent != null && percent >= 80 ? "bg-[#D85C54]" : "bg-[#4CC554]";
