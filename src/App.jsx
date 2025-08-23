@@ -28,6 +28,7 @@ import SearchPage from "./pages/searchPage.jsx";
 import SellerHomePage from "./pages/sellerPage/seller-home.jsx";
 import SelfBuyPage from "./pages/produckDetailPage/selfBuyPage.jsx";
 import SellerBottomNav from "./components/seller/seller-navbar.jsx";
+import AddProduct from "./pages/sellerPage/add-product.jsx";
 
 import PageGuard from "./components/router/PageGaurd.jsx";
 import Register from "./pages/loginPage/register.jsx";
@@ -170,6 +171,13 @@ function AppContent() {
                     />
 
                     <Route path="/seller-home" element={<SellerHomePage />} />
+
+                    <Route
+                        path="/seller/add-product"
+                        element={<AddProduct />}
+                    />
+
+                    <Route path="/add-product" element={<AddProduct />} />
 
                     <Route
                         path="/marketDetailPage/:shopId/product/:productId/groupBuy"
