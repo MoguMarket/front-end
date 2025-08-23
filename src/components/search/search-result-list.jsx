@@ -1,3 +1,4 @@
+// src/components/search/search-result-list.jsx
 import React from "react";
 import SearchResultCard from "./search-result-card";
 
@@ -9,11 +10,14 @@ export default function SearchResultList({ items = [] }) {
   if (!items?.length) return null;
 
   return (
-    <ul className="px-4 py-2 space-y-3">
+    <ul className=" py-3 grid grid-cols-2 gap-x-3 gap-y-4 list-none m-0">
       {items.map((it, idx) => {
         const key = it?.id ?? it?.productId ?? idx;
-        console.log(it);
-        return <SearchResultCard key={key} item={it} />;
+        return (
+          <li key={key}>
+            <SearchResultCard item={it} />
+          </li>
+        );
       })}
     </ul>
   );
