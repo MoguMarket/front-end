@@ -11,11 +11,11 @@ export default function GroupBuyProductCard({
     typeof product?.progressCurrent === "number" &&
     typeof product?.progressMax === "number" &&
     product.progressMax > 0 &&
-    product.progressCurrent > 0;
+    product.progressCurrent >= 0;
 
   return (
     <div className="pb-4 border-b-9 border-[#f5f5f5]">
-      <div className="flex items-center gap-3  pb-3 pt-1">
+      <div className="flex items-center gap-3 pb-3 pt-1">
         <img
           src={product.imageUrl}
           alt={product.name}
@@ -24,7 +24,10 @@ export default function GroupBuyProductCard({
         <div>
           <div className="text-sm text-green-600 font-medium">{shop.name}</div>
           <div className="text-base font-semibold">
-            {product.name} <span className="font-normal">{product.weight}</span>
+            {product.name}{" "}
+            {product.weight ? (
+              <span className="font-normal">{product.weight}</span>
+            ) : null}
           </div>
         </div>
       </div>
