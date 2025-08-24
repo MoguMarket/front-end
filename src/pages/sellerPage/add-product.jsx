@@ -1,9 +1,16 @@
 // src/pages/sellerPage/add-product.jsx
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaCamera } from "react-icons/fa";
+import {
+    FaCamera,
+    FaChevronLeft,
+    FaChevronRight,
+    FaStar,
+} from "react-icons/fa";
 
 const API_BASE = import.meta.env.VITE_API_BASE || "";
+const UPLOAD_ENDPOINT =
+    import.meta.env.VITE_UPLOAD_ENDPOINT || `${API_BASE}/api/uploads/images`;
 
 function computeDiscountSteps(maxDiscount, steps) {
     const md = Number(maxDiscount);
@@ -25,8 +32,11 @@ export default function AddProduct() {
     const [unit, setUnit] = useState("KG");
     const [originalPrice, setOriginalPrice] = useState("");
     const [stock, setStock] = useState("");
-    const [imageUrl, setImageUrl] = useState(""); // 대표 이미지 URL(서버 전송용, 필수)
-    const [imagePreviews, setImagePreviews] = useState([]); // 파일 업로드 미리보기(최대 4장)
+
+    // 이미지: 파일(최대 4장) + 미리보기
+    const [imageFiles, setImageFiles] = useState([]); // File[]
+    const [imagePreviews, setImagePreviews] = useState([]); // string[] (objectURL)
+
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
 
@@ -38,45 +48,89 @@ export default function AddProduct() {
         [maxDiscount, steps]
     );
 
-    // 파일 선택 → 미리보기(최대 4장까지)
+    // 파일 선택 → 미리보기(최대 4장)
     const handleImageFile = (e) => {
         const files = Array.from(e.target.files || []);
         if (!files.length) return;
 
-        // 대표 URL이 있으면 1칸 차지한다고 보고 남은 슬롯 계산
-        const used = (imageUrl?.trim() ? 1 : 0) + imagePreviews.length;
-        const remaining = Math.max(0, 4 - used);
+        const remaining = Math.max(0, 4 - imageFiles.length);
         if (remaining === 0) return;
 
         const selected = files.slice(0, remaining);
+        setImageFiles((prev) => [...prev, ...selected]);
+
         const newPreviews = selected.map((f) => URL.createObjectURL(f));
         setImagePreviews((prev) => [...prev, ...newPreviews]);
 
-        // 같은 파일을 다시 선택할 수 있도록 input 초기화
-        e.target.value = "";
+        e.target.value = ""; // 같은 파일 재선택 가능
     };
 
-    // 미리보기 그리드에 표시할 목록(대표 URL + 파일 미리보기) 최대 4개
-    const previewList = useMemo(() => {
-        const list = [];
-        if (imageUrl.trim()) list.push(imageUrl.trim());
-        return [...list, ...imagePreviews].slice(0, 4);
-    }, [imageUrl, imagePreviews]);
+    // 재배치 유틸
+    const reorderPair = (arr, from, to) => {
+        const next = [...arr];
+        const [item] = next.splice(from, 1);
+        next.splice(to, 0, item);
+        return next;
+    };
 
+    const makePrimary = (idx) => {
+        if (idx === 0) return;
+        setImageFiles((prev) => reorderPair(prev, idx, 0));
+        setImagePreviews((prev) => reorderPair(prev, idx, 0));
+    };
+
+    const moveLeft = (idx) => {
+        if (idx <= 0) return;
+        setImageFiles((prev) => reorderPair(prev, idx, idx - 1));
+        setImagePreviews((prev) => reorderPair(prev, idx, idx - 1));
+    };
+
+    const moveRight = (idx) => {
+        if (idx >= imageFiles.length - 1) return;
+        setImageFiles((prev) => reorderPair(prev, idx, idx + 1));
+        setImagePreviews((prev) => reorderPair(prev, idx, idx + 1));
+    };
+
+    // 미리보기 목록(파일 기준) 최대 4개
+    const previewList = useMemo(
+        () => imagePreviews.slice(0, 4),
+        [imagePreviews]
+    );
+
+    // 업로드 (여러 장 병렬 업로드, 현재 순서를 유지)
+    async function uploadImages(files) {
+        const uploads = files.map(async (file) => {
+            const form = new FormData();
+            form.append("file", file);
+            const res = await fetch(UPLOAD_ENDPOINT, {
+                method: "POST",
+                body: form,
+            });
+            if (!res.ok) throw new Error("이미지 업로드 실패");
+            const data = await res.json();
+            const url =
+                data?.url || (Array.isArray(data?.urls) ? data.urls[0] : null);
+            if (!url) throw new Error("업로드 응답에 URL 없음");
+            return url;
+        });
+        return Promise.all(uploads);
+    }
+
+    // 유효성: 기본 필드 + 파일 최소 1장
     const valid = useMemo(() => {
         const price = Number(originalPrice);
         const stk = Number(stock);
-        return (
+        const baseOk =
             name.trim() &&
             description.trim() &&
             unit.trim() &&
-            imageUrl.trim() && // 서버 전송용 대표 이미지 URL 필요
             Number.isFinite(price) &&
             price > 0 &&
             Number.isInteger(stk) &&
-            stk >= 0
-        );
-    }, [name, description, unit, originalPrice, stock, imageUrl]);
+            stk >= 0;
+
+        return Boolean(baseOk && imageFiles.length > 0);
+    }, [name, description, unit, originalPrice, stock, imageFiles.length]);
 
     const onSubmit = async (e) => {
         e.preventDefault();
@@ -86,6 +140,20 @@ export default function AddProduct() {
         setErrorMsg("");
 
         try {
+            // 1) 현재 순서대로 업로드
+            const uploadedUrls = await uploadImages(imageFiles);
+
+            // 2) 대표 이미지 = 업로드된 배열의 첫 번째
+            const primaryImageUrl = uploadedUrls[0] || "";
+            if (!primaryImageUrl) {
+                setErrorMsg(
+                    "이미지 업로드에 실패했습니다. 다시 시도해 주세요."
+                );
+                setLoading(false);
+                return;
+            }
+
+            // 3) 상품 등록 POST
             const payload = {
                 storeId: 1,
                 name: name.trim(),
@@ -93,7 +161,8 @@ export default function AddProduct() {
                 unit: unit.trim(),
                 originalPrice: Number(originalPrice),
                 stock: Number(stock),
-                imageUrl: imageUrl.trim(), // 대표 이미지 한 장만 서버 전송
+                imageUrl: primaryImageUrl, // 명세상 대표 1장만 전송
+                // 추가 이미지 저장이 필요하면 백엔드 스펙 확장(ex: images: uploadedUrls)
             };
 
             const res = await fetch(`${API_BASE}/api/products`, {
@@ -116,7 +185,7 @@ export default function AddProduct() {
                 setErrorMsg("서버 오류가 발생했습니다.");
             }
         } catch (err) {
-            setErrorMsg("네트워크 오류가 발생했습니다.");
+            setErrorMsg(err?.message || "네트워크/업로드 오류가 발생했습니다.");
         } finally {
             setLoading(false);
         }
@@ -124,10 +193,9 @@ export default function AddProduct() {
 
     return (
         <div className="relative w-full max-w-[390px] mx-auto bg-white min-h-screen pb-16">
-            {/* 페이지 헤더가 따로 있다면 생략 가능 */}
             <header className="px-3 pt-4 pb-2">
                 <p className="mt-1 px-[2px] text-xs text-gray-500">
-                *필수 정보를 반드시 입력해 주세요.
+                    *필수 정보를 반드시 입력해 주세요.
                 </p>
             </header>
 
@@ -163,26 +231,12 @@ export default function AddProduct() {
                             </span>
                         </div>
                         <p className="mt-1 text-xs text-gray-500">
-                            (대표 이미지 URL 1장 + 파일 미리보기 최대 3장 권장)
+                            썸네일을 탭하면 대표이미지로 설정됩니다.
+                            좌/우 버튼으로 순서 조정 가능.
                         </p>
                     </label>
 
-                    {/* 대표 이미지 URL(필수) */}
-                    <div className="mt-2">
-                        <label className="block text-xs text-gray-600 mb-1">
-                            대표 이미지 URL
-                        </label>
-                        <input
-                            type="url"
-                            placeholder="https://... 대표 이미지 URL"
-                            value={imageUrl}
-                            onChange={(e) => setImageUrl(e.target.value)}
-                            className="w-full rounded-lg border px-3 py-2 text-sm tracking-[-0.03em]"
-                            style={{ fontFeatureSettings: "'tnum'" }}
-                        />
-                    </div>
-
-                    {/* 미리보기 그리드(최대 4칸) */}
+                    {/* 미리보기 그리드(최대 4칸) + 순서 변경 */}
                     <div className="mt-2">
                         <div className="flex items-center justify-between mb-1">
                             <span className="text-xs text-gray-600">
@@ -192,15 +246,81 @@ export default function AddProduct() {
                                 {previewList.length}/4
                             </span>
                         </div>
+
                         <div className="grid grid-cols-4 gap-2">
                             {previewList.map((src, idx) => (
-                                <img
-                                    key={idx}
-                                    src={src}
-                                    alt={`preview-${idx}`}
-                                    className="w-full aspect-square object-cover rounded-md border"
-                                />
+                                <div key={idx} className="relative group">
+                                    {/* 썸네일 */}
+                                    <button
+                                        type="button"
+                                        onClick={() => makePrimary(idx)}
+                                        className="w-full aspect-square rounded-md overflow-hidden border focus:outline-none focus:ring-2 focus:ring-[#F5B236]"
+                                        aria-label={
+                                            idx === 0
+                                                ? "대표 이미지"
+                                                : "대표로 설정"
+                                        }
+                                        title={
+                                            idx === 0
+                                                ? "대표 이미지"
+                                                : "대표로 설정"
+                                        }
+                                    >
+                                        <img
+                                            src={src}
+                                            alt={`preview-${idx}`}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </button>
+
+                                    {/* 순서 배지 */}
+                                    <div
+                                        className={`absolute top-1 left-1 px-1.5 py-[2px] rounded text-[10px] ${
+                                            idx === 0
+                                                ? "bg-[#F5B236] text-white"
+                                                : "bg-black/60 text-white"
+                                        }`}
+                                    >
+                                        {idx === 0 ? (
+                                            <span className="flex items-center gap-1">
+                                                <FaStar className="inline-block" />{" "}
+                                                대표
+                                            </span>
+                                        ) : (
+                                            <span>{idx + 1}</span>
+                                        )}
+                                    </div>
+
+                                    {/* 좌/우 이동 버튼 (호버 시 노출, 모바일도 탭 영역 큼) */}
+                                    {previewList.length > 1 && (
+                                        <>
+                                            <button
+                                                type="button"
+                                                onClick={() => moveLeft(idx)}
+                                                className="absolute inset-y-0 left-0 flex items-center justify-center w-6 bg-black/30 hover:bg-black/50 text-white opacity-0 group-hover:opacity-100 transition"
+                                                aria-label="왼쪽으로 이동"
+                                                disabled={idx === 0}
+                                            >
+                                                <FaChevronLeft />
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => moveRight(idx)}
+                                                className="absolute inset-y-0 right-0 flex items-center justify-center w-6 bg-black/30 hover:bg-black/50 text-white opacity-0 group-hover:opacity-100 transition"
+                                                aria-label="오른쪽으로 이동"
+                                                disabled={
+                                                    idx ===
+                                                    previewList.length - 1
+                                                }
+                                            >
+                                                <FaChevronRight />
+                                            </button>
+                                        </>
+                                    )}
+                                </div>
                             ))}
+
+                            {/* 빈 슬롯 표시 */}
                             {Array.from({
                                 length: Math.max(0, 4 - previewList.length),
                             }).map((_, i) => (
@@ -312,13 +432,13 @@ export default function AddProduct() {
                     </div>
                     <div>
                         <label className="block text-sm font-medium">
-                            단계별 할인율
+                            단계 수
                         </label>
                         <input
                             type="number"
                             inputMode="numeric"
                             min={0}
-                            step="0.1"
+                            step="1"
                             value={steps}
                             onChange={(e) => setSteps(e.target.value)}
                             placeholder="예) 5"
