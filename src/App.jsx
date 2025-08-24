@@ -1,10 +1,10 @@
 import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  useLocation,
-  useMatch,
-  Navigate,
+    BrowserRouter as Router,
+    Routes,
+    Route,
+    useLocation,
+    useMatch,
+    Navigate,
 } from "react-router-dom";
 import BottomNavBar from "./components/bottomnavbar";
 import Header from "./components/header";
@@ -28,6 +28,8 @@ import SellerHomePage from "./pages/sellerPage/seller-home.jsx";
 import SelfBuyPage from "./pages/produckDetailPage/selfBuyPage.jsx";
 import SellerBottomNav from "./components/seller/seller-navbar.jsx";
 import AddProduct from "./pages/sellerPage/add-product.jsx";
+import SellerSalesPage from "./pages/sellerPage/seller-sales.jsx";
+import AddSales from "./pages/sellerPage/add-sales.jsx";
 
 import PageGuard from "./components/router/PageGaurd.jsx";
 import Register from "./pages/loginPage/register.jsx";
@@ -168,9 +170,6 @@ function AppContent() {
               </PageGuard>
             }
           />
-          <Route path="/seller-home" element={<SellerHomePage />} />
-          <Route path="/seller/add-product" element={<AddProduct />} />
-          <Route path="/add-product" element={<AddProduct />} />
           <Route
             path="/marketDetailPage/:shopId/product/:productId/groupBuy"
             element={
@@ -179,6 +178,15 @@ function AppContent() {
               </PageGuard>
             }
           />
+
+          {/* 셀러 영역 */}
+          <Route path="/seller-home" element={<SellerHomePage />} />
+          <Route path="/seller/add-product" element={<AddProduct />} />
+          <Route path="/add-product" element={<AddProduct />} />
+          <Route path="/seller/sales" element={<SellerSalesPage />} />
+          <Route path="/seller/add-sales" element={<AddSales />} />
+
+          {/* 셀프바이 */}
           <Route
             path="/selfBuy/:shopId/product/:productId"
             element={
@@ -187,26 +195,28 @@ function AppContent() {
               </PageGuard>
             }
           />
+
           {/* 없는 경로 → 홈으로 */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
 
-      {/* 바텀네비: 상품등록 페이지/상세/그룹바이/셀프바이는 숨김 */}
+      {/* 바텀네비: 상품등록/상세/그룹바이/셀프바이는 숨김 */}
       {!isAuthPage &&
         !isProductDetailPage &&
         !isGroupBuyPage &&
         !isSelfBuyPage &&
-        !isAddProduct && // ← 상품등록 페이지에서 숨김
+        !isAddProduct &&
         (isSellerPage ? <SellerBottomNav /> : <BottomNavBar />)}
     </div>
   );
 }
 
+
 export default function App() {
-  return (
-    <Router>
-      <AppContent />
-    </Router>
-  );
+    return (
+        <Router>
+            <AppContent />
+        </Router>
+    );
 }

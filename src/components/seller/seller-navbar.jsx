@@ -33,7 +33,6 @@ export default function SellerBottomNav() {
 function NavItem({ icon, label, to, isActive }) {
   const iconColor = isActive ? "text-[#F5B236]" : "text-gray-500";
   const textColor = isActive ? "text-[#F5B236]" : "text-gray-700";
-
   return (
     <Link
       to={to}
