@@ -1,5 +1,4 @@
-// src/components/seller/seller-navbar.jsx
-import { FaHome, FaCarrot, FaReceipt, FaUser } from "react-icons/fa";
+import { FaHome, FaReceipt, FaUser } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 
 export default function SellerBottomNav() {
@@ -15,14 +14,8 @@ export default function SellerBottomNav() {
                     isActive={location.pathname === "/seller-home"}
                 />
                 <NavItem
-                    icon={<FaCarrot size={22} />}
-                    label="상품등록"
-                    to="/seller/add-product"
-                    isActive={location.pathname === "/seller/add-product"}
-                />
-                <NavItem
                     icon={<FaReceipt size={22} />}
-                    label="판매현황"
+                    label="공구현황"
                     to="/seller/sales"
                     isActive={location.pathname === "/seller/sales"}
                 />
@@ -45,7 +38,7 @@ function NavItem({ icon, label, to, isActive }) {
         <Link
             to={to}
             className="flex flex-col items-center text-xs tracking-[-0.03em] font-[Pretendard]"
-            style={{ fontFeatureSettings: "'tnum'" }} // 숫자 자간 -3% + tabular numbers
+            style={{ fontFeatureSettings: "'tnum'" }}
         >
             <div className={iconColor}>{icon}</div>
             <span className={`mt-1 ${textColor}`}>{label}</span>
