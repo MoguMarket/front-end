@@ -1,11 +1,12 @@
 // src/pages/productDetailPage.jsx
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import Header from "../../components/marketDetail/header";
 import ProductSale from "../../components/productDetail/product-sale";
 import MoguProgress from "../../components/productDetail/mogu-progress";
 import ProductDetailBottom from "../../components/productDetail/product-detail-bottom";
+import RatingReview from "../../components/productDetail/rating-review";
 
 const API_BASE = import.meta.env.VITE_API_BASE;
 
@@ -18,6 +19,9 @@ export default function ProductDetailPage() {
   const [product, setProduct] = useState(null);
   const [reviewCount, setReviewCount] = useState(0);
   const [rating, setRating] = useState(0);
+
+  // 요약 재조회 함수 ref
+  const refetchSummary = useRef(async () => {});
 
   useEffect(() => {
     let aborted = false;
@@ -64,8 +68,8 @@ export default function ProductDetailPage() {
       }
     })();
 
-    // ✅ 리뷰 요약(평균/개수)
-    (async () => {
+    // 요약 조회 함수 정의
+    refetchSummary.current = async () => {
       try {
         const r = await fetch(
           `${API_BASE}/api/reviews/summary?productId=${productId}`,
@@ -85,7 +89,10 @@ export default function ProductDetailPage() {
         setRating(0);
         setReviewCount(0);
       }
-    })();
+    };
+
+    // 처음 1회 호출
+    refetchSummary.current();
 
     return () => {
       aborted = true;
@@ -106,12 +113,6 @@ export default function ProductDetailPage() {
     );
   }
 
-  console.log(
-    `[Detail] 공구 진행: ${product.progressCurrent ?? 0} / ${
-      product.progressMax ?? 0
-    }`
-  );
-
   return (
     <div className="relative w-full max-w-[390px] mx-auto pt-14 pb-16">
       <Header marketName={shop.name} />
@@ -122,7 +123,15 @@ export default function ProductDetailPage() {
         className="w-full aspect-[4/3] object-cover rounded-b-lg"
       />
 
+      {/* ⭐ 별점 리뷰 입력 (등록 성공 시 요약 재조회) */}
+
+      {/* ====== 모여서 구매 관련 ====== */}
       <ProductSale shop={shop} product={{ ...product, reviewCount, rating }} />
+
+      <RatingReview
+        productId={product.id}
+        onSubmitted={() => refetchSummary.current && refetchSummary.current()}
+      />
 
       <MoguProgress
         startAt={product.startAt}
