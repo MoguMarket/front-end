@@ -109,7 +109,7 @@ export default function SelfBuyPage() {
 
   return (
     <>
-      <GroupBuyHeader />
+      <GroupBuyHeader title="혼자서 구매" />
       {/* 👇 혼자구매: 진행바 숨김 */}
       <GroupBuyProductCard
         shop={shop}
