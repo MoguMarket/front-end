@@ -1,4 +1,3 @@
-// src/App.jsx
 import {
   BrowserRouter as Router,
   Routes,
@@ -193,10 +192,12 @@ function AppContent() {
         </Routes>
       </div>
 
+      {/* 바텀네비: 상품등록 페이지/상세/그룹바이/셀프바이는 숨김 */}
       {!isAuthPage &&
         !isProductDetailPage &&
         !isGroupBuyPage &&
         !isSelfBuyPage &&
+        !isAddProduct && // ← 상품등록 페이지에서 숨김
         (isSellerPage ? <SellerBottomNav /> : <BottomNavBar />)}
     </div>
   );
