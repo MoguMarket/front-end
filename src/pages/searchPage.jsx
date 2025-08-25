@@ -134,6 +134,7 @@ export default function SearchPage() {
                 }
 
                 const json = await res.json();
+                console.log("[Search API response]", url, json);
                 setItems(extractItemsFromResponse(json));
             } catch (e) {
                 if (e.name !== "AbortError") {
