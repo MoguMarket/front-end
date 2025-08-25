@@ -115,7 +115,7 @@ export default function SearchPage() {
                         term
                     )}`;
                 } else {
-                    // 카테고리 검색 (영문 enum 키 사용, 페이지네이션 기본값)
+                    // 카테고리 검색
                     url = `${API_BASE}/api/products/category/${encodeURIComponent(
                         catKey
                     )}?page=0&size=50`;
@@ -126,7 +126,6 @@ export default function SearchPage() {
                     signal: ctrl.signal,
                 });
 
-                // 200이 아닐 때 에러 본문 로그
                 if (!res.ok) {
                     const text = await res.text().catch(() => "");
                     console.warn("[search] HTTP", res.status, text);
@@ -160,19 +159,26 @@ export default function SearchPage() {
 
     return (
         <>
-            <SearchTopBar
-                defaultValue={q}
-                onSubmit={handleSubmit}
-                onBack={handleBack}
-                onClear={handleClearQuery}
-                categoryLabel={category}
-                onClearCategory={handleClearCategory}
-                onFocusShowSuggestions={handleFocusShowSuggestions}
-            />
+            {/* 헤더는 sticky top-0 */}
+            <div className="sticky top-0 z-50 bg-white">
+                <SearchTopBar
+                    defaultValue={q}
+                    onSubmit={handleSubmit}
+                    onBack={handleBack}
+                    onClear={handleClearQuery}
+                    categoryLabel={category}
+                    onClearCategory={handleClearCategory}
+                    onFocusShowSuggestions={handleFocusShowSuggestions}
+                />
+            </div>
 
-            <div className="relative z-[60] bg-white mt-15">
+            {/* 필터바는 헤더 아래에 sticky */}
+            <div className="sticky top-[56px] z-40 bg-white">
                 <SearchFilterBar />
+            </div>
 
+            {/* 결과/빈 상태 */}
+            <div>
                 {items.length > 0 ? (
                     <SearchResultList items={items} />
                 ) : showSuggestions ? (
