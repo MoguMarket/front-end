@@ -51,6 +51,9 @@ export default function AddProduct() {
         );
     }, [name, description, unit, originalPrice, stock]);
 
+    console.log("API_BASE:", API_BASE);
+    console.log("최종 요청 URL:", `${API_BASE}/api/groupbuy/open`);
+
     // onSubmit: productId 하드코딩 → 공동구매 생성만 호출
     const onSubmit = async (e) => {
         e.preventDefault();
@@ -60,39 +63,27 @@ export default function AddProduct() {
         setErrorMsg("");
 
         try {
-            // ✅ 업로드/상품등록 모든 로직 제거됨
-            // ✅ productId 하드코딩
-            const productId = 1; // 필요에 따라 실제 존재하는 ID로 변경
-
-            // 공동구매 생성 payload
             const groupbuyPayload = {
-                userId: 1, // 요구사항: userId만 하드코딩
+                productId: 1, // 필요에 따라 실제 상품 ID 넣기
                 targetQty: Number(stock),
                 maxDiscountPercent: Number(maxDiscount) || 0,
                 stage: Number(steps) || 3,
-                startAt: new Date().toISOString(),
-                endAt: new Date(
-                    Date.now() + 7 * 24 * 60 * 60 * 1000
-                ).toISOString(),
             };
 
-            const gbRes = await fetch(
-                `${API_BASE}/api/groupbuys/${productId}`,
-                {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(groupbuyPayload),
-                }
-            );
+            console.log("API_BASE:", API_BASE);
+            console.log("최종 요청 URL:", `${API_BASE}/api/groupbuy/open`);
+            console.log("요청 바디:", groupbuyPayload);
+
+            const gbRes = await fetch(`${API_BASE}/api/groupbuy/open`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(groupbuyPayload),
+            });
 
             const gbText = await gbRes.text();
-            console.log(
-                "[POST /api/groupbuys/%s] status:",
-                productId,
-                gbRes.status
-            );
-            console.log("[POST /api/groupbuys body]", groupbuyPayload);
-            console.log("[POST /api/groupbuys resp]", gbText);
+            console.log("[POST /api/groupbuy/open] status:", gbRes.status);
+            console.log("[POST /api/groupbuy/open body]", groupbuyPayload);
+            console.log("[POST /api/groupbuy/open resp]", gbText);
 
             if (gbRes.ok) {
                 alert("공동구매 등록 완료!");
