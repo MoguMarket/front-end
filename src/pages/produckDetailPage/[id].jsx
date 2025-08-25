@@ -11,142 +11,152 @@ import RatingReview from "../../components/productDetail/rating-review";
 const API_BASE = import.meta.env.VITE_API_BASE;
 
 export default function ProductDetailPage() {
-  const { shopId, productId } = useParams();
-  const navigate = useNavigate();
+    const { productId } = useParams();
+    const navigate = useNavigate();
 
-  const [loading, setLoading] = useState(true);
-  const [shop, setShop] = useState(null);
-  const [product, setProduct] = useState(null);
-  const [reviewCount, setReviewCount] = useState(0);
-  const [rating, setRating] = useState(0);
+    const [loading, setLoading] = useState(true);
 
-  // 요약 재조회 함수 ref
-  const refetchSummary = useRef(async () => {});
+    const [basicInfo, setBasicInfo] = useState(null);
+    const [storeInfo, setStoreInfo] = useState(null);
+    const [groupBuyInfo, setGroupBuyInfo] = useState(null);
+    const [priceInfo, setPriceInfo] = useState(null);
+    const [discountInfo, setDiscountInfo] = useState(null);
+    const [stockInfo, setStockInfo] = useState(null);
+    const [orderInfo, setOrderInfo] = useState(null);
+    const [progressInfo, setProgressInfo] = useState(null);
 
-  useEffect(() => {
-    let aborted = false;
+    const [reviewCount, setReviewCount] = useState(0);
+    const [rating, setRating] = useState(0);
 
-    (async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(
-          `${API_BASE}/api/products/${productId}/overview`,
-          { headers: { Accept: "application/json" } }
+    const refetchSummary = useRef(async () => {});
+
+    useEffect(() => {
+        let aborted = false;
+
+        (async () => {
+            try {
+                setLoading(true);
+                const res = await fetch(
+                    `${API_BASE}/api/products/${productId}/overview`,
+                    { headers: { Accept: "application/json" } }
+                );
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const ov = await res.json();
+                if (aborted) return;
+
+                if (!ov.storeInfo) throw new Error("storeInfo 없음");
+
+                setBasicInfo(ov.basicInfo);
+                setStoreInfo(ov.storeInfo);
+                setGroupBuyInfo(ov.groupBuyInfo);
+                setPriceInfo(ov.priceInfo);
+                setDiscountInfo(ov.discountInfo);
+                setStockInfo(ov.stockInfo);
+                setOrderInfo(ov.orderInfo);
+                setProgressInfo(ov.progressInfo);
+            } catch (e) {
+                console.error("[ProductDetail] fetch failed:", e);
+                setBasicInfo(null);
+                setStoreInfo(null);
+                setGroupBuyInfo(null);
+                setPriceInfo(null);
+                setDiscountInfo(null);
+                setStockInfo(null);
+                setOrderInfo(null);
+                setProgressInfo(null);
+            } finally {
+                if (!aborted) setLoading(false);
+            }
+        })();
+
+        refetchSummary.current = async () => {
+            try {
+                const r = await fetch(
+                    `${API_BASE}/api/reviews/summary?productId=${productId}`,
+                    { headers: { Accept: "application/json" } }
+                );
+                if (!r.ok) {
+                    setRating(0);
+                    setReviewCount(0);
+                    return;
+                }
+                const s = await r.json();
+                if (aborted) return;
+                setRating(Number(s?.average ?? 0));
+                setReviewCount(Number(s?.count ?? 0));
+            } catch (e) {
+                console.warn("[ProductDetail] review summary fetch failed:", e);
+                setRating(0);
+                setReviewCount(0);
+            }
+        };
+
+        refetchSummary.current();
+
+        return () => {
+            aborted = true;
+        };
+    }, [productId]);
+
+    if (loading)
+        return <div className="p-6 text-sm text-neutral-500">불러오는 중…</div>;
+
+    if (!basicInfo || !storeInfo) {
+        return (
+            <div className="p-6">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="mb-3 text-sm underline"
+                >
+                    뒤로가기
+                </button>
+                <div className="text-red-600">상품을 찾을 수 없습니다.</div>
+            </div>
         );
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const ov = await res.json();
-        if (aborted) return;
+    }
 
-        const original = Number(ov.originalPricePerBaseUnit ?? 0);
-        const discounted = Number(ov.appliedUnitPrice ?? original);
-
-        setShop({ shopId: ov.storeId, name: ov.storeName ?? "상점" });
-        setProduct({
-          id: ov.productId ?? Number(productId),
-          name: ov.name ?? "상품",
-          imageUrl: ov.imageUrl ?? "/images/placeholder.jpg",
-          unit: ov.unit ?? "KG",
-          originalPrice: original,
-          discountedPrice: discounted,
-          stock: ov.stock ?? 0,
-          progressCurrent:
-            typeof ov.currentQty === "number" ? ov.currentQty : 0,
-          progressMax: typeof ov.targetQty === "number" ? ov.targetQty : 0,
-          groupBuyStatus: ov.groupBuyStatus ?? null,
-          maxDiscountPercent: ov.maxDiscountPercent ?? null,
-          currentDiscountPercent: ov.currentDiscountPercent ?? 0,
-          startAt: ov.startAt,
-          endAt: ov.endAt,
-          remainingToNextStage: ov.remainingToNextStage,
-        });
-      } catch (e) {
-        console.error("[ProductDetail] fetch failed:", e);
-        setShop(null);
-        setProduct(null);
-      } finally {
-        if (!aborted) setLoading(false);
-      }
-    })();
-
-    // 요약 조회 함수 정의
-    refetchSummary.current = async () => {
-      try {
-        const r = await fetch(
-          `${API_BASE}/api/reviews/summary?productId=${productId}`,
-          { headers: { Accept: "application/json" } }
-        );
-        if (!r.ok) {
-          setRating(0);
-          setReviewCount(0);
-          return;
-        }
-        const s = await r.json();
-        if (aborted) return;
-        setRating(Number(s?.average ?? 0));
-        setReviewCount(Number(s?.count ?? 0));
-      } catch (e) {
-        console.warn("[ProductDetail] review summary fetch failed:", e);
-        setRating(0);
-        setReviewCount(0);
-      }
-    };
-
-    // 처음 1회 호출
-    refetchSummary.current();
-
-    return () => {
-      aborted = true;
-    };
-  }, [productId]);
-
-  if (loading)
-    return <div className="p-6 text-sm text-neutral-500">불러오는 중…</div>;
-
-  if (!shop || !product) {
     return (
-      <div className="p-6">
-        <button onClick={() => navigate(-1)} className="mb-3 text-sm underline">
-          뒤로가기
-        </button>
-        <div className="text-red-600">상품을 찾을 수 없습니다.</div>
-      </div>
+        <div className="relative w-full max-w-[390px] mx-auto pt-14 pb-16">
+            <Header marketName={storeInfo.storeName} />
+
+            <img
+                src={basicInfo.imageUrl}
+                alt={basicInfo.name}
+                className="w-full aspect-[4/3] object-cover rounded-b-lg"
+            />
+
+            <ProductSale
+                storeInfo={storeInfo}
+                basicInfo={basicInfo}
+                priceInfo={priceInfo}
+                discountInfo={discountInfo}
+                rating={rating}
+                reviewCount={reviewCount}
+            />
+
+            <RatingReview
+                productId={basicInfo.productId}
+                onSubmitted={() =>
+                    refetchSummary.current && refetchSummary.current()
+                }
+            />
+
+            <MoguProgress
+                startAt={groupBuyInfo?.startAt}
+                endAt={groupBuyInfo?.endAt}
+                currentQty={orderInfo?.currentQty}
+                targetQty={groupBuyInfo?.targetQty}
+                remainingToNextStage={progressInfo?.remainingToNextStage}
+                currentDiscountPercent={discountInfo?.discountPercent}
+                appliedUnitPrice={priceInfo?.appliedUnitPrice}
+            />
+
+            <ProductDetailBottom
+                storeInfo={storeInfo}
+                basicInfo={basicInfo}
+                priceInfo={priceInfo}
+                stockInfo={stockInfo}
+            />
+        </div>
     );
-  }
-
-  return (
-    <div className="relative w-full max-w-[390px] mx-auto pt-14 pb-16">
-      <Header marketName={shop.name} />
-
-      <img
-        src={product.imageUrl}
-        alt={product.name}
-        className="w-full aspect-[4/3] object-cover rounded-b-lg"
-      />
-
-      {/* ⭐ 별점 리뷰 입력 (등록 성공 시 요약 재조회) */}
-
-      {/* ====== 모여서 구매 관련 ====== */}
-      <ProductSale shop={shop} product={{ ...product, reviewCount, rating }} />
-
-      <RatingReview
-        productId={product.id}
-        onSubmitted={() => refetchSummary.current && refetchSummary.current()}
-      />
-
-      <MoguProgress
-        startAt={product.startAt}
-        endAt={product.endAt}
-        currentQty={product.progressCurrent}
-        targetQty={product.progressMax}
-        remainingToNextStage={product.remainingToNextStage}
-        currentDiscountPercent={product.currentDiscountPercent}
-        appliedUnitPrice={product.discountedPrice}
-      />
-
-      <ProductDetailBottom
-        shop={shop}
-        product={{ ...product, reviewCount, rating }}
-      />
-    </div>
-  );
 }
