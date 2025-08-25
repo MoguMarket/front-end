@@ -1,16 +1,11 @@
 // src/pages/sellerPage/add-product.jsx
 import { useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import {
-  FaCamera,
-  FaChevronLeft,
-  FaChevronRight,
-  FaStar,
-} from "react-icons/fa";
+import { FaCamera } from "react-icons/fa";
 
 const API_BASE = import.meta.env.VITE_API_BASE || "";
 const UPLOAD_ENDPOINT =
-  import.meta.env.VITE_UPLOAD_ENDPOINT || `${API_BASE}/api/uploads/images`;
+  import.meta.env.VITE_UPLOAD_ENDPOINT || `${API_BASE}/api/images`; // 필요시 변경
 
 function computeDiscountSteps(maxDiscount, steps) {
   const md = Number(maxDiscount);
@@ -34,9 +29,10 @@ export default function AddProduct() {
   const [originalPrice, setOriginalPrice] = useState("");
   const [stock, setStock] = useState("");
 
-  // 이미지: 파일(최대 4장) + 미리보기(순서 유지)
-  const [imageFiles, setImageFiles] = useState([]); // File[]
-  const [imagePreviews, setImagePreviews] = useState([]); // objectURL[]
+  // 이미지 관련
+  const [imageUrl, setImageUrl] = useState(""); // 대표 URL 수동 입력(옵션)
+  const [imagePreviews, setImagePreviews] = useState([]); // 파일 미리보기용 URL[]
+  const [imageFiles, setImageFiles] = useState([]); // 실제 파일 목록(대표는 첫 칸)
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -48,86 +44,83 @@ export default function AddProduct() {
     [maxDiscount, steps]
   );
 
-  // 파일 선택 → 미리보기(최대 4장)
+  // 파일 선택 → 미리보기/파일 보관(최대 4칸, 수동 URL 있으면 1칸 차지)
   const handleImageFile = (e) => {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
 
-    const remaining = Math.max(0, 4 - imageFiles.length);
+    const used = (imageUrl?.trim() ? 1 : 0) + imagePreviews.length;
+    const remaining = Math.max(0, 4 - used);
     if (remaining === 0) return;
 
     const selected = files.slice(0, remaining);
-    setImageFiles((prev) => [...prev, ...selected]);
-
     const newPreviews = selected.map((f) => URL.createObjectURL(f));
     setImagePreviews((prev) => [...prev, ...newPreviews]);
+    setImageFiles((prev) => [...prev, ...selected]);
 
     e.target.value = ""; // 같은 파일 재선택 가능
   };
 
-  // 재배치 유틸
-  const reorderPair = (arr, from, to) => {
-    const next = [...arr];
-    const [item] = next.splice(from, 1);
-    next.splice(to, 0, item);
-    return next;
+  const handleRemoveImage = (index) => {
+    // index는 프리뷰 그리드 기준(수동 URL이 있으면 0번째는 URL)
+    if (imageUrl.trim() && index === 0) {
+      setImageUrl("");
+      return;
+    }
+    const offset = imageUrl.trim() ? 1 : 0;
+    const fileIdx = index - offset;
+    if (fileIdx >= 0) {
+      setImagePreviews((prev) => prev.filter((_, i) => i !== fileIdx));
+      setImageFiles((prev) => prev.filter((_, i) => i !== fileIdx));
+    }
   };
 
-  const makePrimary = (idx) => {
-    if (idx === 0) return;
-    setImageFiles((prev) => reorderPair(prev, idx, 0));
-    setImagePreviews((prev) => reorderPair(prev, idx, 0));
-  };
+  // 미리보기 그리드(대표 URL + 파일 미리보기) 최대 4
+  const previewList = useMemo(() => {
+    const list = [];
+    if (imageUrl.trim()) list.push(imageUrl.trim()); // 첫 칸(대표)
+    return [...list, ...imagePreviews].slice(0, 4);
+  }, [imageUrl, imagePreviews]);
 
-  const moveLeft = (idx) => {
-    if (idx <= 0) return;
-    setImageFiles((prev) => reorderPair(prev, idx, idx - 1));
-    setImagePreviews((prev) => reorderPair(prev, idx, idx - 1));
-  };
-
-  const moveRight = (idx) => {
-    if (idx >= imageFiles.length - 1) return;
-    setImageFiles((prev) => reorderPair(prev, idx, idx + 1));
-    setImagePreviews((prev) => reorderPair(prev, idx, idx + 1));
-  };
-
-  // 미리보기(최대 4개)
-  const previewList = useMemo(() => imagePreviews.slice(0, 4), [imagePreviews]);
-
-  // 유효성: 파일 최소 1장
+  // 유효성: 파일 1개 이상 또는 imageUrl 둘 중 하나만 있어도 OK
   const valid = useMemo(() => {
     const price = Number(originalPrice);
     const stk = Number(stock);
-    const baseOk =
+    const hasImage = imageFiles.length > 0 || imageUrl.trim();
+    return (
       name.trim() &&
       description.trim() &&
       unit.trim() &&
+      hasImage &&
       Number.isFinite(price) &&
       price > 0 &&
       Number.isInteger(stk) &&
-      stk >= 0;
+      stk >= 0
+    );
+  }, [
+    name,
+    description,
+    unit,
+    originalPrice,
+    stock,
+    imageFiles.length,
+    imageUrl,
+  ]);
 
-    return Boolean(baseOk && imageFiles.length > 0);
-  }, [name, description, unit, originalPrice, stock, imageFiles.length]);
-
-  // 업로드 (여러 장 병렬 업로드, 현재 순서를 유지)
-  async function uploadImages(files) {
-    const uploads = files.map(async (file) => {
-      const form = new FormData();
-      form.append("file", file); // 백엔드가 'file' 필드명을 기대한다고 가정
-      const res = await fetch(UPLOAD_ENDPOINT, {
-        method: "POST",
-        body: form,
-      });
-      if (!res.ok) throw new Error("이미지 업로드 실패");
-      const data = await res.json();
-      const url =
-        data?.url || (Array.isArray(data?.urls) ? data.urls[0] : null);
-      if (!url) throw new Error("업로드 응답에 URL 없음");
-      return url;
-    });
-    return Promise.all(uploads);
-  }
+  // 이미지 업로드 → 업로드 URL 반환 (대표 1장만)
+  const uploadImageAndGetUrl = async () => {
+    if (imageFiles.length === 0) {
+      return imageUrl.trim(); // 파일 없으면 수동입력 URL 사용
+    }
+    const form = new FormData();
+    form.append("file", imageFiles[0]); // 서버 필드명이 'file'이라고 가정
+    const res = await fetch(UPLOAD_ENDPOINT, { method: "POST", body: form });
+    if (!res.ok) throw new Error("이미지 업로드 실패");
+    const data = await res.json();
+    const uploadedUrl = data?.imageUrl || data?.url;
+    if (!uploadedUrl) throw new Error("업로드 응답에 이미지 URL 없음");
+    return uploadedUrl;
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -137,18 +130,10 @@ export default function AddProduct() {
     setErrorMsg("");
 
     try {
-      // 1) 현재 순서대로 업로드
-      const uploadedUrls = await uploadImages(imageFiles);
+      // 1) 대표 이미지 URL 확보
+      const finalImageUrl = await uploadImageAndGetUrl();
 
-      // 2) 대표 이미지 = 업로드된 배열의 첫 번째
-      const primaryImageUrl = uploadedUrls[0] || "";
-      if (!primaryImageUrl) {
-        setErrorMsg("이미지 업로드에 실패했습니다. 다시 시도해 주세요.");
-        setLoading(false);
-        return;
-      }
-
-      // 3) 상품 등록 POST
+      // 2) 상품 등록 POST
       const payload = {
         storeId: 1,
         name: name.trim(),
@@ -156,8 +141,7 @@ export default function AddProduct() {
         unit: unit.trim(),
         originalPrice: Number(originalPrice),
         stock: Number(stock),
-        imageUrl: primaryImageUrl, // 대표 1장
-        // 추가 이미지 필요하면: images: uploadedUrls
+        imageUrl: finalImageUrl, // 대표 1장
       };
 
       const res = await fetch(`${API_BASE}/api/products`, {
@@ -167,9 +151,9 @@ export default function AddProduct() {
       });
 
       if (res.status === 201) {
-        const createdId = await res.json(); // 예: 생성된 ID
+        const createdId = await res.json(); // 생성된 ID나 객체
         alert(`상품이 등록되었습니다. (ID: ${createdId})`);
-        // 쿼리 유지하며 셀러 홈으로
+        // 현재 쿼리(예: ?shopId=...) 유지하여 셀러 홈으로 복귀
         navigate(`/seller-home${location.search || ""}`, { replace: true });
       } else if (res.status === 400) {
         setErrorMsg("요청 바디 유효성 오류입니다. 입력값을 확인하세요.");
@@ -186,21 +170,22 @@ export default function AddProduct() {
   };
 
   return (
-    <div className="relative w-full max-w-[390px] mx-auto bg-white min-h-screen pb-16">
-      <header className="px-3 pt-4 pb-2">
-        <p className="mt-1 px-[2px] text-xs text-gray-500">
+    <div className="relative w-full max-w-[390px] mx-auto bg-white min-h-screen pb-24">
+      {/* 헤더 */}
+      <header className=" pt-3 pb-3">
+        <p className="text-xs text-gray-500">
           *필수 정보를 반드시 입력해 주세요.
         </p>
       </header>
 
-      <form
-        onSubmit={onSubmit}
-        className="mt-1 px-4 space-y-4 font-[Pretendard]"
-      >
-        {/* 이미지 영역 */}
-        <section className="space-y-2">
-          <label className="block text-sm font-medium">*상품 사진</label>
+      <form onSubmit={onSubmit} className="mt-1 space-y-6 font-[Pretendard]">
+        {/* 이미지 업로드 영역 */}
+        <section className="space-y-4">
+          <label className="block text-[15px] font-semibold mb-1">
+            *상품 사진
+          </label>
 
+          {/* 큰 업로드 박스 */}
           <input
             id="productImage"
             type="file"
@@ -212,205 +197,186 @@ export default function AddProduct() {
           />
           <label
             htmlFor="productImage"
-            className="block w-full rounded-xl border-2 border-dashed border-gray-300 px-4 py-5 text-center cursor-pointer hover:border-[#F5B236] hover:bg-[#FFF8E6] transition"
+            className="block w-full rounded-3xl border-2 border-gray-300 px-5 py-8 text-center cursor-pointer hover:border-[#F5B236] hover:bg-[#FFF8E6] transition"
             aria-label="상품 사진 촬영 또는 업로드"
           >
-            <div className="flex items-center justify-center gap-2">
-              <FaCamera size={18} className="text-gray-600" />
-              <span className="text-sm font-medium">
+            <div className="flex flex-col items-center justify-center gap-3">
+              <div className="w-14 h-14 rounded-full border border-gray-300 flex items-center justify-center">
+                <FaCamera className="text-gray-600" />
+              </div>
+              <div className="text-[15px] font-medium">
                 사진 촬영/업로드 (최대 4장)
-              </span>
+              </div>
+              <p className="text-sm text-gray-500">
+                첫번째 사진이 대표 이미지로 설정됩니다
+              </p>
             </div>
-            <p className="mt-1 text-xs text-gray-500">
-              썸네일을 탭하면 대표이미지로 설정됩니다. 좌/우 버튼으로 순서 조정
-              가능.
-            </p>
           </label>
 
-          {/* 미리보기(최대 4칸) + 순서 변경 */}
-          <div className="mt-2">
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-xs text-gray-600">미리보기</span>
-              <span className="text-[11px] text-gray-500">
-                {previewList.length}/4
-              </span>
-            </div>
-
-            <div className="grid grid-cols-4 gap-2">
-              {previewList.map((src, idx) => (
-                <div key={idx} className="relative group">
-                  <button
-                    type="button"
-                    onClick={() => makePrimary(idx)}
-                    className="w-full aspect-square rounded-md overflow-hidden border focus:outline-none focus:ring-2 focus:ring-[#F5B236]"
-                    aria-label={idx === 0 ? "대표 이미지" : "대표로 설정"}
-                    title={idx === 0 ? "대표 이미지" : "대표로 설정"}
-                  >
-                    <img
-                      src={src}
-                      alt={`preview-${idx}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-
-                  <div
-                    className={`absolute top-1 left-1 px-1.5 py-[2px] rounded text-[10px] ${
-                      idx === 0
-                        ? "bg-[#F5B236] text-white"
-                        : "bg-black/60 text-white"
-                    }`}
-                  >
-                    {idx === 0 ? (
-                      <span className="flex items-center gap-1">
-                        <FaStar className="inline-block" /> 대표
-                      </span>
-                    ) : (
-                      <span>{idx + 1}</span>
-                    )}
+          {/* 하단 썸네일 4칸 */}
+          <div className="grid grid-cols-4 gap-4">
+            {Array.from({ length: 4 }).map((_, i) => {
+              const src = previewList[i];
+              const isRep = i === 0 && !!src;
+              return src ? (
+                <div
+                  key={i}
+                  className={`relative w-full aspect-square rounded-xl overflow-hidden border-2 ${
+                    isRep ? "border-blue-500" : "border-gray-200"
+                  }`}
+                >
+                  {/* 삭제 버튼 */}
+                  <div className="absolute top-1 right-1 z-20">
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveImage(i)}
+                      className="w-5 h-5 flex items-center justify-center rounded-full bg-black/60 text-white text-xs"
+                    >
+                      ✕
+                    </button>
                   </div>
 
-                  {previewList.length > 1 && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => moveLeft(idx)}
-                        className="absolute inset-y-0 left-0 flex items-center justify-center w-6 bg-black/30 hover:bg-black/50 text-white opacity-0 group-hover:opacity-100 transition"
-                        aria-label="왼쪽으로 이동"
-                        disabled={idx === 0}
-                      >
-                        <FaChevronLeft />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => moveRight(idx)}
-                        className="absolute inset-y-0 right-0 flex items-center justify-center w-6 bg-black/30 hover:bg-black/50 text-white opacity-0 group-hover:opacity-100 transition"
-                        aria-label="오른쪽으로 이동"
-                        disabled={idx === previewList.length - 1}
-                      >
-                        <FaChevronRight />
-                      </button>
-                    </>
+                  {/* 대표 라벨 */}
+                  {isRep && (
+                    <span className="absolute left-1.5 top-1.5 z-10 rounded-md bg-blue-600 px-2 py-[3px] text-[11px] font-semibold text-white">
+                      대표
+                    </span>
                   )}
-                </div>
-              ))}
 
-              {Array.from({ length: Math.max(0, 4 - previewList.length) }).map(
-                (_, i) => (
-                  <div
-                    key={`ph-${i}`}
-                    className="w-full aspect-square rounded-md border-2 border-dashed border-gray-200 flex items-center justify-center text-[11px] text-gray-400"
-                  >
-                    빈 슬롯
-                  </div>
-                )
-              )}
-            </div>
+                  <img
+                    src={src}
+                    alt={`preview-${i}`}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ) : (
+                <div
+                  key={i}
+                  className="w-full aspect-square rounded-xl border-2 border-gray-200 flex items-center justify-center text-[12px] text-gray-400"
+                >
+                  빈 슬롯
+                </div>
+              );
+            })}
           </div>
+
+          {/* 고급 설정: 대표 이미지 URL(옵션) */}
+          <details className="mt-1">
+            <summary className="cursor-pointer text-xs text-gray-500">
+              고급 설정 (대표 이미지 URL 입력)
+            </summary>
+            <div className="mt-3">
+              <input
+                type="url"
+                placeholder="https://... 대표 이미지 URL"
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+                className="w-full h-12 rounded-xl border border-gray-300 px-4 text-[15px] tracking-[-0.03em]"
+                style={{ fontFeatureSettings: "'tnum'" }}
+              />
+              <p className="mt-2 text-[11px] text-gray-500">
+                ※ 파일 업로드가 어려울 때만 사용하세요. 입력 시 첫 칸(대표)로
+                표시됩니다.
+              </p>
+            </div>
+          </details>
         </section>
 
         {/* 기본 정보 */}
-        <section className="grid grid-cols-1 gap-3">
+        <section className="space-y-5">
+          {/* 상품명 */}
           <div>
-            <label className="block text-sm font-medium">*상품명</label>
+            <label className="block text-[15px] font-semibold mb-2">
+              *상품명
+            </label>
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="예) 제주 당근 5kg"
-              className="w-full rounded-lg border px-3 py-2 text-sm"
+              className="w-full h-12 rounded-xl border border-gray-300 px-4 text-[15px]"
             />
           </div>
 
+          {/* 설명 */}
           <div>
-            <label className="block text-sm font-medium">*설명</label>
+            <label className="block text-[15px] font-semibold mb-2">
+              *설명
+            </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder='예) "달달한 봄 당근"'
-              rows={3}
-              className="w-full rounded-lg border px-3 py-2 text-sm"
+              placeholder="예) 달달한 봄 당근"
+              rows={4}
+              className="w-full rounded-xl border border-gray-300 px-4 py-3 text-[15px] min-h-[120px]"
             />
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
-            <div className="col-span-1">
-              <label className="block text-sm font-medium">*단위</label>
+          {/* 단위·정가 (2열) */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-[15px] font-semibold mb-2">
+                *단위
+              </label>
               <input
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
-                className="w-full rounded-lg border px-3 py-2 text-sm"
+                placeholder="KG"
+                className="w-full h-12 rounded-xl border border-gray-300 px-4 text-[15px] uppercase"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium">*정가(원)</label>
-              <input
-                type="number"
-                inputMode="numeric"
-                min={1}
-                step="1"
-                value={originalPrice}
-                onChange={(e) => setOriginalPrice(e.target.value)}
-                placeholder="예) 3200"
-                className="w-full rounded-lg border px-3 py-2 text-sm tracking-[-0.03em]"
-                style={{ fontFeatureSettings: "'tnum'" }}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium">*재고</label>
-              <input
-                type="number"
-                inputMode="numeric"
-                min={0}
-                step="1"
-                value={stock}
-                onChange={(e) => setStock(e.target.value)}
-                placeholder="예) 500"
-                className="w-full rounded-lg border px-3 py-2 text-sm tracking-[-0.03em]"
-                style={{ fontFeatureSettings: "'tnum'" }}
-              />
+              <label className="block text-[15px] font-semibold mb-2">
+                *정가
+              </label>
+              <div className="relative">
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  min={1}
+                  step="1"
+                  value={originalPrice}
+                  onChange={(e) => setOriginalPrice(e.target.value)}
+                  placeholder="예) 3200"
+                  className="w-full h-12 rounded-xl border border-gray-300 pl-4 pr-12 text-[15px] tracking-[-0.03em]"
+                  style={{ fontFeatureSettings: "'tnum'" }}
+                />
+                <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm text-gray-400">
+                  원
+                </span>
+              </div>
             </div>
           </div>
-        </section>
 
-        {/* 할인 단계 보조(서버 전송 X) */}
-        <section className="grid grid-cols-2 gap-3">
+          {/* 재고 */}
           <div>
-            <label className="block text-sm font-medium">최대 할인율(%)</label>
-            <input
-              type="number"
-              inputMode="numeric"
-              min={0}
-              step="0.1"
-              value={maxDiscount}
-              onChange={(e) => setMaxDiscount(e.target.value)}
-              placeholder="예) 15"
-              className="w-full rounded-lg border px-3 py-2 text-sm tracking-[-0.03em]"
-              style={{ fontFeatureSettings: "'tnum'" }}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">단계 수</label>
+            <label className="block text-[15px] font-semibold mb-2">
+              *재고
+            </label>
             <input
               type="number"
               inputMode="numeric"
               min={0}
               step="1"
-              value={steps}
-              onChange={(e) => setSteps(e.target.value)}
-              placeholder="예) 5"
-              className="w-full rounded-lg border px-3 py-2 text-sm tracking-[-0.03em]"
+              value={stock}
+              onChange={(e) => setStock(e.target.value)}
+              placeholder="예) 500"
+              className="w-full h-12 rounded-xl border border-gray-300 px-4 text-[15px]"
               style={{ fontFeatureSettings: "'tnum'" }}
             />
           </div>
-
-          {discountSteps.length > 0 && (
-            <div className="col-span-2 text-xs text-gray-600">
-              단계별 할인율(누적): {discountSteps.join("%, ")}%
-            </div>
-          )}
         </section>
 
+        {/* (선택) 할인 단계 보조 → 값 있을 때만 */}
+        {discountSteps.length > 0 && (
+          <section className="mt-1">
+            <div className="text-sm text-gray-600">
+              단계별 할인율(누적): {discountSteps.join("%, ")}%
+            </div>
+          </section>
+        )}
+
+        {/* 오류/버튼 */}
         {errorMsg && (
           <p className="text-sm text-red-600" role="alert">
             {errorMsg}
@@ -420,7 +386,7 @@ export default function AddProduct() {
         <button
           type="submit"
           disabled={!valid || loading}
-          className="w-full h-11 rounded-lg bg-[#F5B236] text-white text-sm font-semibold disabled:opacity-50"
+          className="w-full h-12 rounded-xl bg-[#F5B236] text-white text-[15px] font-semibold disabled:opacity-50 mt-3"
         >
           {loading ? "등록 중..." : "등록하기"}
         </button>

@@ -4,8 +4,9 @@ import PaymentButton from "./payment-button";
 import { useNavigate } from "react-router-dom";
 import PortOne from "@portone/browser-sdk/v2";
 
-const PORTONE_CHANNEL_KEY = import.meta.env.VITE_PORTONE_CHANNEL_KEY; // channel-key-...
-const PORTONE_STORE_ID = import.meta.env.VITE_PORTONE_STORE_ID; // store-...
+const API_BASE = import.meta.env.VITE_API_BASE || "";
+const PORTONE_CHANNEL_KEY = import.meta.env.VITE_PORTONE_CHANNEL_KEY;
+const PORTONE_STORE_ID = import.meta.env.VITE_PORTONE_STORE_ID;
 
 const formatWon = (n) =>
   new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 0 }).format(n || 0);
@@ -13,6 +14,7 @@ const formatWon = (n) =>
 export default function OrderPanel({
   shopId,
   productId,
+  groupBuyId, // ✅ 공구 ID 필요
   minKg = 0.5,
   maxKg = 2,
   stepKg = 0.5,
@@ -41,12 +43,73 @@ export default function OrderPanel({
   const dec = () =>
     setWeightKg((w) => Math.max(minKg, +(w - stepKg).toFixed(1)));
 
-  // 간단 랜덤 결제ID (실무는 서버 발급 권장)
   const makePaymentId = () => {
     try {
       return crypto.randomUUID();
     } catch {
       return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    }
+  };
+
+  // 공통 POST 유틸 (세션 쿠키 포함 + 실패 본문 로깅)
+  const postJson = async (url, body) => {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      console.warn(`[POST] ${url} -> ${res.status}`, text);
+    }
+    return res;
+  };
+
+  // ✅ 눈속임: 버튼 누른 즉시 내부 콜백 3개 실행 (순차)
+  const runInternalCallbacks = async ({ qtyUnits, amount }) => {
+    try {
+      // 1) 공동구매 참여
+      if (groupBuyId != null) {
+        await postJson(`${API_BASE}/api/groupbuy/participate`, {
+          groupBuyId,
+          qty: qtyUnits, // 정수
+        });
+      }
+
+      // 2) 단일상품 주문 확정 → ordersId 획득
+      const r2 = await postJson(`${API_BASE}/api/orders/confirm-single`, {
+        productId: Number(productId),
+        qtyBase: qtyUnits,
+        participateInGroupBuy: true,
+        ...(groupBuyId != null ? { groupBuyId } : {}),
+      });
+
+      let ordersId = null;
+      if (r2.ok) {
+        const data = await r2.json().catch(() => ({}));
+        ordersId =
+          data?.ordersId ??
+          data?.id ??
+          (typeof data === "number" ? data : null);
+      }
+
+      // 3) 결제 엔티티 생성 (ordersId가 생겼을 때만)
+      if (ordersId != null) {
+        await postJson(`${API_BASE}/api/payments`, {
+          ordersId,
+          paidCashAmount: amount,
+          paidPointAmount: 0,
+        });
+      }
+
+      return ordersId; // 없을 수도 있음 (그래도 뒤로 가지 않음)
+    } catch (e) {
+      console.warn("[internal callbacks] error", e);
+      return null;
     }
   };
 
@@ -56,71 +119,70 @@ export default function OrderPanel({
       return;
     }
     setShowError(false);
+    setPaying(true);
 
-    // 프론트 직결: 금액/수량을 그대로 사용
-    const quantityGrams = Math.round(weightKg * 1000); // 1.5kg -> 1500 g
-    const redirectUrl = `${location.origin}/order`; // 포트원 콘솔/서버 화이트리스트 필수
+    const qtyUnits = Math.max(1, Math.round(weightKg / stepKg)); // base 단위 정수
     const paymentId = makePaymentId();
-
-    // 주문명 간단 구성 (원하면 바꾸세요)
     const orderName = `공동구매 #${productId} (${weightKg}kg)`;
 
-    try {
-      setPaying(true);
+    // ✅ 1) 내부 콜백 먼저 실행 (결제 성공 여부 무관)
+    const ordersIdPromise = runInternalCallbacks({
+      qtyUnits,
+      amount: totalPrice,
+    });
 
-      if (!PORTONE_CHANNEL_KEY || !PORTONE_STORE_ID) {
-        throw new Error(
-          "환경변수(VITE_PORTONE_CHANNEL_KEY / VITE_PORTONE_STORE_ID)가 설정되지 않았습니다."
-        );
-      }
-
-      // PortOne 결제창 바로 호출
-      const result = await PortOne.requestPayment({
-        channelKey: PORTONE_CHANNEL_KEY,
-        storeId: PORTONE_STORE_ID,
-        paymentId,
-        orderName,
-        totalAmount: totalPrice,
-        currency: "KRW",
-        payMethod: "CARD",
-        redirectUrl,
-        customer: {
-          // ✅ 이니시스 V2 일반결제 필수값들
-          email: "testuser@example.com",
-          fullName: "홍길동",
-          // 일부 환경에서 요구될 수 있어 같이 세팅 권장
-          phoneNumber: "01012345678",
-        },
-        products: [
-          {
-            id: String(productId),
-            name: orderName,
-            quantity: 1,
-            amount: totalPrice,
+    // ✅ 2) PortOne 결제창은 "그냥 띄우기" (await 안 함)
+    if (PORTONE_CHANNEL_KEY && PORTONE_STORE_ID) {
+      try {
+        // eslint-disable-next-line no-void
+        void PortOne.requestPayment({
+          channelKey: PORTONE_CHANNEL_KEY,
+          storeId: PORTONE_STORE_ID,
+          paymentId,
+          orderName,
+          totalAmount: totalPrice,
+          currency: "KRW",
+          payMethod: "CARD",
+          redirectUrl: `${location.origin}/order`,
+          customer: {
+            email: "testuser@example.com",
+            fullName: "홍길동",
+            phoneNumber: "01012345678",
           },
-        ],
-        customData: {
-          productId,
-          shopId,
-          quantityGrams,
-          unitPricePerKg,
-          source: "frontend-direct",
-        },
-      });
-
-      // SDK 레벨 에러
-      if (result?.code !== undefined) {
-        console.error("[PortOne][Error]", result);
-        alert(result.message || "결제에 실패했습니다.");
-        return;
+          products: [
+            {
+              id: String(productId),
+              name: orderName,
+              quantity: 1,
+              amount: totalPrice,
+            },
+          ],
+          customData: {
+            productId,
+            shopId,
+            weightKg,
+            unitPricePerKg,
+            source: "frontend-direct-mock",
+          },
+        }).catch((e) => {
+          // 취소/오류여도 무시 (눈속임)
+          console.warn("[PortOne] ignored error", e);
+        });
+      } catch (e) {
+        console.warn("[PortOne] launch failed", e);
       }
+    } else {
+      console.warn("PORTONE env 미설정: 결제창은 생략됨(내부 콜백만 실행)");
+    }
 
-      // 결제창에서 성공 후 돌아오면 redirectUrl로 이동하지만,
-      // SPA 경험 위해 바로 이동시켜도 OK
-      navigate(`/order?paymentId=${encodeURIComponent(paymentId)}`);
-    } catch (e) {
-      console.error("[PAY][Direct] error:", e);
-      alert(e.message || "결제 중 오류가 발생했습니다.");
+    // ✅ 3) 내부 콜백 끝나면 주문 페이지로 이동(ordersId가 없으면 그냥 /order)
+    try {
+      const ordersId = await ordersIdPromise;
+      if (ordersId != null) {
+        navigate(`/order?ordersId=${encodeURIComponent(ordersId)}`);
+      } else {
+        navigate(`/order`);
+      }
     } finally {
       setPaying(false);
     }
@@ -218,7 +280,6 @@ export default function OrderPanel({
         </section>
       </div>
 
-      {/* 하단 고정 결제 버튼 */}
       <div className="h-20" />
       <PaymentButton onClick={handlePay} disabled={paying} />
     </div>

@@ -18,7 +18,7 @@ export default function MyInfoPage() {
     async function fetchMe() {
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_API_BASE}/api/auth/me`,
+          `${import.meta.env.VITE_API_BASE}/api/user/me`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,

@@ -1,4 +1,4 @@
-// file: orderPage.jsx
+// file: src/pages/orderPage.jsx
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import OrderList from "../components/orderPage/order-list";
@@ -20,7 +20,7 @@ const resolveShopId = (item) => {
   return null;
 };
 
-// ── 결제 확인용 작은 배너 컴포넌트(추가) ─────────────────────────
+// ── 결제 확인용 작은 배너 컴포넌트(옵션) ─────────────────────────
 function PaymentConfirmBanner({ paymentId }) {
   const [status, setStatus] = useState("확인 중…");
   const [detail, setDetail] = useState(null);
@@ -55,14 +55,13 @@ function PaymentConfirmBanner({ paymentId }) {
         const j = await r.json().catch(() => null);
         if (aborted) return;
         if (r.ok && j) {
-          // 서버 스펙에 맞춰 키만 유연하게 읽음
           setStatus(j.status ?? j.state ?? "확인 완료");
           setDetail(j);
         } else {
           setStatus("확인 실패");
           setDetail(j);
         }
-      } catch (e) {
+      } catch {
         if (!aborted) {
           setStatus("확인 실패");
           setDetail(null);
@@ -113,11 +112,6 @@ function PaymentConfirmBanner({ paymentId }) {
             원
           </p>
         )}
-
-        {/* 디버깅용 펼치기(원하면 제거) */}
-        {/* <pre className="mt-3 overflow-x-auto text-[11px] text-gray-500">
-          {JSON.stringify(detail, null, 2)}
-        </pre> */}
       </div>
     </section>
   );
@@ -126,7 +120,56 @@ function PaymentConfirmBanner({ paymentId }) {
 export default function OrderPage() {
   const navigate = useNavigate();
   const [sp] = useSearchParams();
-  const paymentId = sp.get("paymentId"); // ← 포트원 리다이렉트에서 붙여준 파라미터
+  const paymentId = sp.get("paymentId"); // 포트원 리다이렉트 파라미터
+
+  // ✅ 여기서 /api/orders를 조회해서 콘솔에만 로그
+  useEffect(() => {
+    let aborted = false;
+
+    (async () => {
+      try {
+        const token =
+          localStorage.getItem("accessToken") ||
+          localStorage.getItem("token") ||
+          sessionStorage.getItem("accessToken");
+
+        const res = await fetch(`${API_BASE}/api/orders`, {
+          headers: {
+            Accept: "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          credentials: "include",
+        });
+
+        const raw = await res.text().catch(() => "");
+        if (aborted) return;
+
+        if (!res.ok) {
+          console.log("[/api/orders] HTTP", res.status, raw);
+          return;
+        }
+
+        let json = null;
+        try {
+          json = raw ? JSON.parse(raw) : null;
+        } catch (e) {
+          console.log("[/api/orders] JSON parse error:", e, raw);
+          return;
+        }
+
+        const list = Array.isArray(json) ? json : [];
+        console.log("[/api/orders] 총 개수:", list.length);
+        console.log("[/api/orders] 원본:", json);
+        if (list.length) console.log("[/api/orders] 첫 주문:", list[0]);
+      } catch (e) {
+        if (!aborted) console.log("[/api/orders] fetch error:", e);
+      }
+    })();
+
+    return () => {
+      aborted = true;
+    };
+  }, []);
 
   const handleMarketClick = useCallback(
     (item) => {
@@ -146,10 +189,10 @@ export default function OrderPage() {
 
   return (
     <main className="mx-auto max-w-md">
-      {/* ✅ 새로 추가된 결제 확인 배너 (paymentId 있을 때만 표시) */}
+      {/* 결제 확인 배너 (paymentId 있을 때만 표시) */}
       {paymentId && <PaymentConfirmBanner paymentId={paymentId} />}
 
-      {/* ✅ 기존 리스트는 그대로 유지 */}
+      {/* 기존 더미 리스트 렌더링 유지 */}
       <OrderList
         items={IN_PROGRESS_ORDERS}
         onItemClick={(id) => console.log("[OrderPage] clicked:", id)}
